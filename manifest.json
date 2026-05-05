@@ -1,0 +1,17 @@
+{
+  "name": "Travel Journal",
+  "short_name": "여행기록",
+  "description": "나의 여행 기록 앱",
+  "start_url": "./travel-journal.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23e8a87c'/><text x='50' y='58' font-size='50' text-anchor='middle' dominant-baseline='middle'>🌍</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
