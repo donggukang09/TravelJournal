@@ -377,34 +377,53 @@ async function submitEntry(){const loc=document.getElementById('entryLocation').
 // ─── Pin List (외부 클릭 안 꺼짐) ───────────────────────────────
 function showPinList(location){const es=state.entries.filter(e=>e.location===location).sort((a,b)=>new Date(b.date)-new Date(a.date));document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal" style="max-height:80vh"><div class="modal-header"><h2>📍 ${location} (${es.length})</h2><button class="btn btn-ghost" onclick="closeModal()">${icon('x',16,'var(--text-muted)')}</button></div><div style="padding:10px">${es.map(e=>`<div class="pin-list-item" onclick="closeModal();setTimeout(()=>showDetail('${e.id}'),100)"><div class="location-thumb"><img src="${e.photos?.[0]||''}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${fmtDate(e.date)}</div>${e.memo?`<div style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.memo}</div>`:''}${e.tripGroup?`<div style="font-size:10px;color:var(--accent)">📁 ${e.tripGroup}</div>`:''}</div>${e.favorite?icon('heartFill',12,'#ef4444'):''}</div>`).join('')}</div></div></div>`}
 
-// ─── Slideshow (음악 자동 재생) ─────────────────────────────────
-let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=5500,ssTimer=null,ssProgressTimer=null,ssAudio=null;
+// ─── Slideshow (검은화면 페이드 전환) ───────────────────────────
+let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=5500,ssTimer=null,ssProgressTimer=null,ssAudio=null,ssActive=false;
 function startSlideshow(){_startSS(getFiltered())}
 function startSlideshowGroup(tn){_startSS(state.entries.filter(e=>e.tripGroup===tn))}
 function startSlideshowSingle(id){_startSS(state.entries.filter(e=>e.id===id))}
 function _startSS(entries){
-  ssPhotos=[];
-  let musicUrl='';
-  entries.forEach(e=>{
-    (e.photos||[]).forEach(u=>ssPhotos.push({u,loc:e.location,dt:e.date,memo:e.memo,trip:e.tripGroup}));
-    if(e.music&&!musicUrl)musicUrl=e.music; // 첫 번째 음악 사용
-  });
+  ssPhotos=[];let musicUrl='';
+  entries.forEach(e=>{(e.photos||[]).forEach(u=>ssPhotos.push({u,loc:e.location,dt:e.date,memo:e.memo,trip:e.tripGroup}));if(e.music&&!musicUrl)musicUrl=e.music;});
   if(!ssPhotos.length){showToast('사진이 없습니다');return}
-  ssIdx=0;ssPlaying=true;
+  ssIdx=0;ssPlaying=true;ssActive=true;
   ssAudio=new Audio();ssAudio.loop=true;
   if(musicUrl){ssAudio.src=musicUrl;ssAudio.play().catch(()=>{})}
-  renderSS(musicUrl);ssSchedule();
+  // Build slideshow DOM once
+  const c=ssPhotos[0];const hasMusic=ssAudio&&ssAudio.src;
+  document.getElementById('modalContainer').innerHTML=`<div class="slideshow" id="ssContainer"><div class="slideshow-img-wrap"><img class="slideshow-img" id="ssImg" src="${c.u}"><div class="slideshow-gradient"></div></div><div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssProgressBar"></div></div><div class="slideshow-top"><span class="slideshow-counter" id="ssCounter">1/${ssPhotos.length}</span><button class="btn-icon" onclick="ssClose()">${icon('x',16,'#fff')}</button></div><div class="slideshow-info" id="ssInfo">${c.trip?`<div class="slideshow-trip">📁 ${c.trip}</div>`:''}<div class="slideshow-location">${c.loc}</div><div class="slideshow-date">${fmtDate(c.dt)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}</div><div class="slideshow-controls"><button class="ss-ctrl-btn" onclick="ssPrev()">${icon('chevL',16,'#fff')}</button><button class="ss-play-btn" id="ssPlayBtn" onclick="ssToggle()">${icon('pause',20,'var(--accent)')}</button><button class="ss-ctrl-btn" onclick="ssNext()">${icon('chevR',16,'#fff')}</button></div>${hasMusic?`<div class="ss-music-label">🎵 음악 재생 중</div>`:''}</div>`;
+  ssSchedule();
 }
-function ssSchedule(){clearTimeout(ssTimer);clearInterval(ssProgressTimer);if(!ssPlaying)return;const start=Date.now();ssProgressTimer=setInterval(()=>{const bar=document.getElementById('ssProgressBar');if(bar)bar.style.width=Math.min((Date.now()-start)/ssDur*100,100)+'%'},30);ssTimer=setTimeout(()=>{ssIdx=(ssIdx+1)%ssPhotos.length;renderSS();ssSchedule()},ssDur)}
-function ssToggle(){ssPlaying=!ssPlaying;if(ssPlaying){ssSchedule();if(ssAudio?.src)ssAudio.play().catch(()=>{})}else{clearTimeout(ssTimer);clearInterval(ssProgressTimer);ssAudio?.pause()}renderSS()}
-function ssNext(){ssIdx=(ssIdx+1)%ssPhotos.length;renderSS();if(ssPlaying)ssSchedule()}
-function ssPrev(){ssIdx=(ssIdx-1+ssPhotos.length)%ssPhotos.length;renderSS();if(ssPlaying)ssSchedule()}
-function ssClose(){clearTimeout(ssTimer);clearInterval(ssProgressTimer);if(ssAudio){ssAudio.pause();ssAudio=null}document.getElementById('modalContainer').innerHTML=''}
-function renderSS(mu){const c=ssPhotos[ssIdx];const hasMusic=ssAudio&&ssAudio.src;document.getElementById('modalContainer').innerHTML=`<div class="slideshow"><div class="slideshow-img-wrap"><img class="slideshow-img" src="${c.u}"><div class="slideshow-gradient"></div></div><div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssProgressBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><button class="btn-icon" onclick="ssClose()">${icon('x',16,'#fff')}</button></div><div class="slideshow-info">${c.trip?`<div class="slideshow-trip">📁 ${c.trip}</div>`:''}<div class="slideshow-location">${c.loc}</div><div class="slideshow-date">${fmtDate(c.dt)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}</div><div class="slideshow-controls"><button class="ss-ctrl-btn" onclick="ssPrev()">${icon('chevL',16,'#fff')}</button><button class="ss-play-btn" onclick="ssToggle()">${icon(ssPlaying?'pause':'play',20,'var(--accent)')}</button><button class="ss-ctrl-btn" onclick="ssNext()">${icon('chevR',16,'#fff')}</button></div>${hasMusic?`<div class="ss-music-label">🎵 음악 재생 중</div>`:''}</div>`}
+function ssTransition(){
+  // Fade out image → black → load new → fade in
+  const img=document.getElementById('ssImg');
+  const info=document.getElementById('ssInfo');
+  if(!img)return;
+  img.style.transition='opacity 0.4s ease';
+  info.style.transition='opacity 0.3s ease';
+  img.style.opacity='0';info.style.opacity='0';
+  setTimeout(()=>{
+    const c=ssPhotos[ssIdx];
+    img.src=c.u;
+    document.getElementById('ssCounter').textContent=`${ssIdx+1}/${ssPhotos.length}`;
+    info.innerHTML=`${c.trip?`<div class="slideshow-trip">📁 ${c.trip}</div>`:''}<div class="slideshow-location">${c.loc}</div><div class="slideshow-date">${fmtDate(c.dt)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}`;
+    // Wait for image to load then fade in
+    img.onload=()=>{img.style.opacity='1';info.style.opacity='1';};
+    // Fallback if image cached
+    if(img.complete){img.style.opacity='1';info.style.opacity='1';}
+  },450);
+}
+function ssSchedule(){clearTimeout(ssTimer);clearInterval(ssProgressTimer);if(!ssPlaying||!ssActive)return;const start=Date.now();ssProgressTimer=setInterval(()=>{const bar=document.getElementById('ssProgressBar');if(bar)bar.style.width=Math.min((Date.now()-start)/ssDur*100,100)+'%';},30);ssTimer=setTimeout(()=>{ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();ssSchedule();},ssDur);}
+function ssToggle(){ssPlaying=!ssPlaying;const btn=document.getElementById('ssPlayBtn');if(btn)btn.innerHTML=icon(ssPlaying?'pause':'play',20,'var(--accent)');if(ssPlaying){ssSchedule();if(ssAudio?.src)ssAudio.play().catch(()=>{})}else{clearTimeout(ssTimer);clearInterval(ssProgressTimer);ssAudio?.pause();}}
+function ssNext(){clearTimeout(ssTimer);clearInterval(ssProgressTimer);ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();if(ssPlaying)setTimeout(()=>ssSchedule(),500);}
+function ssPrev(){clearTimeout(ssTimer);clearInterval(ssProgressTimer);ssIdx=(ssIdx-1+ssPhotos.length)%ssPhotos.length;ssTransition();if(ssPlaying)setTimeout(()=>ssSchedule(),500);}
+function ssClose(){ssActive=false;clearTimeout(ssTimer);clearInterval(ssProgressTimer);if(ssAudio){ssAudio.pause();ssAudio=null}document.getElementById('modalContainer').innerHTML='';}
 
 function closeModal(){document.getElementById('modalContainer').innerHTML=''}
 
 async function init(){
+  // PWA 서비스워커 등록
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
   const cached=loadCache();
   if(cached&&cached.length){state.entries=cached;render()}
   else{document.getElementById('content').innerHTML='<div class="loading-screen"><div class="loading-spinner"></div><p style="font-size:14px;color:var(--text-muted)">클라우드에서 불러오는 중...</p></div>'}
