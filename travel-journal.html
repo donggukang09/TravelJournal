@@ -8,6 +8,8 @@
 <meta name="theme-color" content="#0a0a0f">
 <title>Travel Journal</title>
 <link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0a0f;--bg-card:#14141f;--bg-hover:#1a1a2e;--accent:#e8a87c;--accent-dark:#c47a4a;--accent-light:#f5d0b0;--text:#e8e6e3;--text-muted:#8a8a9a;--text-dim:#5a5a6a;--border:#2a2a3a;--success:#4ade80;--danger:#ef4444;--overlay:rgba(0,0,0,0.75);--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--max-w:720px}
@@ -92,9 +94,8 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}img{-webkit-u
 .trip-entry-card .info p:last-child{font-size:10px;color:var(--text-muted)}
 
 /* ─── Map ─── */
-.map-container{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0a1628;position:relative;margin-top:8px}
-.map-container svg{width:100%;display:block}
-.map-legend{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--text-muted)}
+.map-container{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#0a1628;position:relative;margin-top:8px;height:300px}
+.map-legend{position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--text-muted);z-index:500}
 .location-list{display:grid;grid-template-columns:1fr;gap:6px;margin-top:12px}
 .location-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
 .location-item:active{background:var(--bg-hover)}
@@ -191,7 +192,7 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}img{-webkit-u
 /* ─── Slideshow ─── */
 .slideshow{position:fixed;inset:0;z-index:300;background:#000;animation:fadeIn 0.4s ease}
 .slideshow-img-wrap{position:absolute;inset:0;overflow:hidden}
-.slideshow-img{width:100%;height:100%;object-fit:cover;animation:kenburns 4.5s ease-in-out}
+.slideshow-img{width:100%;height:100%;object-fit:cover;animation:ssFade 0.8s ease-in}
 .slideshow-gradient{position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(0,0,0,0.85))}
 .slideshow-progress{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.08);z-index:10}
 .slideshow-progress-bar{height:100%;background:var(--accent)}
@@ -216,10 +217,14 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}img{-webkit-u
 .pin-list-item{display:flex;align-items:center;gap:10px;padding:9px 10px;margin-bottom:4px;border-radius:8px;background:var(--bg-card);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
 .pin-list-item:active{background:var(--bg-hover)}
 .footer-credit{text-align:center;font-size:10px;color:var(--text-dim);padding:10px;border-top:1px solid var(--border)}
+.map-tooltip{background:rgba(10,10,15,0.9)!important;border:1px solid var(--accent)!important;color:var(--text)!important;font-family:'Noto Sans KR',sans-serif!important;font-size:11px!important;border-radius:6px!important;padding:4px 8px!important;box-shadow:0 2px 8px rgba(0,0,0,0.5)!important}
+.map-tooltip::before{border-top-color:rgba(10,10,15,0.9)!important}
+.map-count-label{background:none!important;border:none!important;box-shadow:none!important;color:#fff!important;font-weight:700!important;font-size:10px!important}
+.leaflet-control-zoom a{background:var(--bg-card)!important;color:var(--text)!important;border-color:var(--border)!important}
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes kenburns{0%{transform:scale(1)}50%{transform:scale(1.1) translate(-1%,-0.5%)}100%{transform:scale(1.05) translate(0.5%,-1%)}}
+@keyframes ssFade{0%{opacity:0}100%{opacity:1}}
 @media(max-width:480px){.hide-mobile{display:none}}
 </style>
 </head>
@@ -292,8 +297,30 @@ let openTrip=null;
 function renderTrips(){const es=getFiltered();const groups={};es.forEach(e=>{const k=e.tripGroup||'미분류';if(!groups[k])groups[k]={n:k,es:[],cs:new Set(),p:0};groups[k].es.push(e);if(e.country)groups[k].cs.add(e.country);groups[k].p+=(e.photos||[]).length});const sorted=Object.values(groups).sort((a,b)=>Math.max(...b.es.map(e=>new Date(e.date)))-Math.max(...a.es.map(e=>new Date(e.date))));return sorted.map(g=>{const o=openTrip===g.n;const cover=g.es[0]?.photos?.[0];const dr=g.es.length?`${fmtDate(g.es[g.es.length-1].date)} ~ ${fmtDate(g.es[0].date)}`:'';return`<div class="trip-card ${o?'open':''}" onclick="openTrip=openTrip==='${g.n}'?null:'${g.n}';render()"><div class="trip-cover">${cover?`<img src="${cover}">`:''}</div><div style="flex:1;min-width:0"><div class="trip-name">${icon('folder',14,'var(--accent)')} ${g.n}</div><div class="trip-date">${dr}</div><div class="trip-stats"><span>📍${g.es.length}개</span><span>📷${g.p}장</span><span>🌍${g.cs.size}개국</span></div></div><button class="btn btn-ghost" onclick="event.stopPropagation();startSlideshowGroup('${g.n}')" style="padding:5px">${icon('play',15,'var(--accent)')}</button><span style="transition:transform 0.2s;display:inline-block;transform:${o?'rotate(90deg)':'rotate(0)'}">${icon('chevR',16,'var(--text-dim)')}</span></div>${o?`<div class="trip-entries-grid">${g.es.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(e=>`<div class="trip-entry-card" onclick="event.stopPropagation();showDetail('${e.id}')"><div class="img-wrap"><img src="${e.photos?.[0]||''}" loading="lazy" onerror="this.style.display='none'"></div><div class="info"><p>${(e.location||'').split(',')[0]}</p><p>${fmtDate(e.date)}</p></div></div>`).join('')}</div>`:''}`}).join('')}
 
 // ─── Map ────────────────────────────────────────────────────────
-let mapSearch='';
-function renderMap(){const groups={};state.entries.forEach(e=>{if(!e.lat||!e.lng)return;const k=`${(+e.lat).toFixed(1)},${(+e.lng).toFixed(1)}`;if(!groups[k])groups[k]={lat:+e.lat,lng:+e.lng,loc:e.location,es:[]};groups[k].es.push(e)});const gs=Object.values(groups);const fg=mapSearch?gs.filter(g=>(g.loc||'').toLowerCase().includes(mapSearch.toLowerCase())):gs;const proj=(lat,lng)=>{const x=(lng+180)*(800/360);const y=225-(Math.log(Math.tan(Math.PI/4+lat*Math.PI/360))*800)/(2*Math.PI);return{x,y}};const pins=fg.map(g=>{const p=proj(g.lat,g.lng);const r=Math.min(5+g.es.length*1.5,12);return`<g style="cursor:pointer" onclick="${g.es.length===1?`showDetail('${g.es[0].id}')`:`showPinList('${g.loc.replace(/'/g,"\\'")}')`}"><circle cx="${p.x}" cy="${p.y}" r="${r+5}" fill="var(--accent)" opacity="0.15"><animate attributeName="r" values="${r+5};${r+9};${r+5}" dur="2.5s" repeatCount="indefinite"/></circle><circle cx="${p.x}" cy="${p.y}" r="${r}" fill="var(--accent)" stroke="#fff" stroke-width="1.5"/>${g.es.length>1?`<text x="${p.x}" y="${p.y+1}" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-size="8" font-weight="700">${g.es.length}</text>`:''}</g>`}).join('');return`<div style="margin-top:8px"><div class="search-box" style="margin-bottom:10px">${icon('search',14,'var(--text-muted)')}<input value="${mapSearch}" oninput="mapSearch=this.value;renderContent()" placeholder="장소 검색..."></div><div class="map-container"><svg viewBox="0 0 800 450"><rect width="800" height="450" fill="#0a1628"/><g fill="#152238" stroke="#1c3050" stroke-width="0.4" opacity="0.9"><path d="M50,80Q90,70 140,90Q160,100 170,140Q175,170 160,200Q140,220 130,200Q110,170 80,190Q50,200 40,170Q30,130 50,80Z"/><path d="M140,230Q160,220 170,240Q180,280 175,320Q165,360 150,380Q135,390 130,370Q125,340 120,300Q115,260 140,230Z"/><path d="M350,80Q380,70 410,80Q430,90 420,120Q410,140 390,150Q370,155 355,140Q340,120 350,80Z"/><path d="M370,160Q400,150 420,170Q440,200 435,260Q425,310 400,340Q380,350 365,330Q350,290 355,240Q358,200 370,160Z"/><path d="M430,60Q500,50 570,70Q620,85 650,110Q670,140 660,170Q640,200 600,200Q560,195 530,180Q490,160 460,140Q435,120 430,90Q428,75 430,60Z"/><path d="M560,200Q590,190 610,210Q620,230 610,250Q590,240 570,230Q555,220 560,200Z"/><path d="M600,290Q640,275 670,290Q690,310 680,340Q660,355 630,350Q605,340 600,320Q598,305 600,290Z"/><ellipse cx="660" cy="140" rx="11" ry="22" transform="rotate(-15,660,140)"/></g>${pins}</svg><div class="map-legend">📍 ${gs.length}곳</div></div><div style="margin-top:14px"><h3 style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text-muted)">방문 장소</h3><div class="location-list">${fg.sort((a,b)=>b.es.length-a.es.length).map(g=>`<div class="location-item" onclick="${g.es.length===1?`showDetail('${g.es[0].id}')`:`showPinList('${g.loc.replace(/'/g,"\\'")}')`}"><div class="location-thumb"><img src="${g.es[0].photos?.[0]||''}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${g.loc}</div><div style="font-size:11px;color:var(--text-muted)">${g.es.length}개</div></div>${icon('chevR',14,'var(--text-dim)')}</div>`).join('')}</div></div></div>`}
+let mapSearch='';let leafletMap=null;
+function renderMap(){const groups={};state.entries.forEach(e=>{if(!e.lat||!e.lng)return;const k=`${(+e.lat).toFixed(1)},${(+e.lng).toFixed(1)}`;if(!groups[k])groups[k]={lat:+e.lat,lng:+e.lng,loc:e.location,es:[]};groups[k].es.push(e)});const gs=Object.values(groups);const fg=mapSearch?gs.filter(g=>(g.loc||'').toLowerCase().includes(mapSearch.toLowerCase())):gs;
+const locList=fg.sort((a,b)=>b.es.length-a.es.length).map(g=>`<div class="location-item" onclick="${g.es.length===1?`showDetail('${g.es[0].id}')`:`showPinList('${g.loc.replace(/'/g,"\\'")}')`}"><div class="location-thumb"><img src="${g.es[0].photos?.[0]||''}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${g.loc}</div><div style="font-size:11px;color:var(--text-muted)">${g.es.length}개</div></div>${icon('chevR',14,'var(--text-dim)')}</div>`).join('');
+const html=`<div style="margin-top:8px"><div class="search-box" style="margin-bottom:10px">${icon('search',14,'var(--text-muted)')}<input value="${mapSearch}" oninput="mapSearch=this.value;renderContent()" placeholder="장소 검색..."></div><div class="map-container" id="leafletMap"></div><div class="map-legend">📍 ${gs.length}곳</div><div style="margin-top:14px"><h3 style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text-muted)">방문 장소</h3><div class="location-list">${locList}</div></div></div>`;
+// Init Leaflet after DOM update
+setTimeout(()=>{
+  const mapEl=document.getElementById('leafletMap');
+  if(!mapEl)return;
+  if(leafletMap){leafletMap.remove();leafletMap=null}
+  leafletMap=L.map('leafletMap',{zoomControl:false,attributionControl:false}).setView([30,10],2);
+  L.control.zoom({position:'bottomright'}).addTo(leafletMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd'}).addTo(leafletMap);
+  // Add pins
+  const bounds=[];
+  fg.forEach(g=>{
+    const m=L.circleMarker([g.lat,g.lng],{radius:Math.min(6+g.es.length*2,14),fillColor:'#e8a87c',fillOpacity:0.9,color:'#fff',weight:2}).addTo(leafletMap);
+    m.bindTooltip(`<b>${g.loc}</b><br>${g.es.length}개 기록`,{className:'map-tooltip'});
+    m.on('click',()=>{if(g.es.length===1)showDetail(g.es[0].id);else showPinList(g.loc)});
+    bounds.push([g.lat,g.lng]);
+    if(g.es.length>1){m.bindTooltip(String(g.es.length),{permanent:true,direction:'center',className:'map-count-label'})}
+  });
+  if(bounds.length>0)leafletMap.fitBounds(bounds,{padding:[30,30],maxZoom:6});
+},50);
+return html}
 
 // ─── Calendar ───────────────────────────────────────────────────
 let calDate=new Date();
@@ -351,7 +378,7 @@ async function submitEntry(){const loc=document.getElementById('entryLocation').
 function showPinList(location){const es=state.entries.filter(e=>e.location===location).sort((a,b)=>new Date(b.date)-new Date(a.date));document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal" style="max-height:80vh"><div class="modal-header"><h2>📍 ${location} (${es.length})</h2><button class="btn btn-ghost" onclick="closeModal()">${icon('x',16,'var(--text-muted)')}</button></div><div style="padding:10px">${es.map(e=>`<div class="pin-list-item" onclick="closeModal();setTimeout(()=>showDetail('${e.id}'),100)"><div class="location-thumb"><img src="${e.photos?.[0]||''}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${fmtDate(e.date)}</div>${e.memo?`<div style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.memo}</div>`:''}${e.tripGroup?`<div style="font-size:10px;color:var(--accent)">📁 ${e.tripGroup}</div>`:''}</div>${e.favorite?icon('heartFill',12,'#ef4444'):''}</div>`).join('')}</div></div></div>`}
 
 // ─── Slideshow (음악 자동 재생) ─────────────────────────────────
-let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=4500,ssTimer=null,ssProgressTimer=null,ssAudio=null;
+let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=5500,ssTimer=null,ssProgressTimer=null,ssAudio=null;
 function startSlideshow(){_startSS(getFiltered())}
 function startSlideshowGroup(tn){_startSS(state.entries.filter(e=>e.tripGroup===tn))}
 function startSlideshowSingle(id){_startSS(state.entries.filter(e=>e.id===id))}
