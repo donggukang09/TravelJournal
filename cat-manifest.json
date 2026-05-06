@@ -1,0 +1,25 @@
+{
+  "name": "덴데 & 부우",
+  "short_name": "덴데부우",
+  "description": "덴데 & 부우 고양이 성장 기록",
+  "start_url": "./cat-journal.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "icons": [
+    {
+      "src": "./cat-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./cat-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

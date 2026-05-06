@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1a1a2e">
 <title>🐾 덴데 & 부우</title>
+<link rel="manifest" href="cat-manifest.json">
+<link rel="apple-touch-icon" href="cat-icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -222,7 +224,7 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 // ═══ DEVELOPED BY DONGGU KANG ═══
 
 const API_URL="https://script.google.com/macros/s/AKfycbwAQEvwQEAu45ShEyJKjZainLeu1TOXqxTI-4JkjrMCcjBjDxjZSQyXxWzSp4NuenIC/exec";
-const BIRTHDAYS={dende:'2016-02-11',buu:'2023-08-04'};
+const BIRTHDAYS={dende:'2016-02-11',buu:'2016-08-04'};
 
 let state={entries:[],catFilter:'all'};
 const CACHE='catjournal_v2';
@@ -395,6 +397,7 @@ function ssClose(){ssActive=false;clearTimeout(ssTimer);clearInterval(ssPTimer);
 function closeModal(){document.getElementById('modalContainer').innerHTML=''}
 
 async function init(){
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('./cat-sw.js').catch(()=>{});}
   const cached=loadCache();
   if(cached&&cached.length){state.entries=cached.map(e=>({...e,cat:e.tripGroup||'dende'}));render()}
   else{document.getElementById('content').innerHTML='<div class="empty-state"><div class="big">🐱</div><p style="font-family:\'Press Start 2P\';font-size:10px;color:var(--accent)">LOADING...</p></div>'}
