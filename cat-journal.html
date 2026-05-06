@@ -209,7 +209,7 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 const API_URL="https://script.google.com/macros/s/AKfycbwAQEvwQEAu45ShEyJKjZainLeu1TOXqxTI-4JkjrMCcjBjDxjZSQyXxWzSp4NuenIC/exec";
 
 // 덴데/부우 생일 (월령 계산용) - 동구님이 나중에 수정
-const BIRTHDAYS = { dende: '2016-02-11', buu: '2026-08-04' };
+const BIRTHDAYS = { dende: '2023-03-01', buu: '2023-06-01' };
 
 let state = { entries: [], catFilter: 'all' }; // all, dende, buu, together
 const CACHE = 'catjournal_v1';
@@ -239,10 +239,10 @@ function fmtDateFull(d){if(!d)return'';const dt=new Date(d);return`${dt.getFullY
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).substr(2,5);
 
 const API={
-  async getAll(){try{const r=await fetch(API_URL+'?action=getAll');const d=await r.json();return d.success?d.entries:null}catch{return null}},
-  async add(e){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',entry:e})});return await r.json()}catch{return null}},
-  async del(id){try{await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'delete',id})})}catch{}},
-  async upload(b64,fn,dt){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'uploadPhoto',base64:b64,fileName:fn,date:dt,mimeType:'image/jpeg'})});return await r.json()}catch{return null}},
+  async getAll(){try{const r=await fetch(API_URL+'?action=getAll&sheet=cats');const d=await r.json();return d.success?d.entries:null}catch{return null}},
+  async add(e){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',sheet:'cats',entry:e})});return await r.json()}catch{return null}},
+  async del(id){try{await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'delete',sheet:'cats',id})})}catch{}},
+  async upload(b64,fn,dt){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'uploadPhoto',sheet:'cats',base64:b64,fileName:fn,date:dt,mimeType:'image/jpeg'})});return await r.json()}catch{return null}},
 };
 
 function showToast(m,t='info'){document.getElementById('toastContainer').innerHTML=`<div class="toast ${t}">${m}</div>`;setTimeout(()=>document.getElementById('toastContainer').innerHTML='',3000)}
