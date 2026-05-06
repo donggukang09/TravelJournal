@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#faf6f1">
+<title>🐾 덴데 & 부우</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6f1;--bg-card:#fff;--bg-warm:#f5efe8;
+  --dende:#FF8C6B;--dende-light:#FFD4C4;--dende-bg:#FFF5F0;
+  --buu:#7EB5E8;--buu-light:#C4DFFA;--buu-bg:#F0F6FF;
+  --together:#B39DDB;--together-light:#E1D5F5;--together-bg:#F5F0FF;
+  --text:#2D2520;--text-muted:#8A7E76;--text-dim:#B5ADA6;
+  --border:#E8E0D8;--shadow:0 2px 12px rgba(45,37,32,0.08);
+  --accent:#FF8C6B;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --max-w:720px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+input,select,textarea,button{font-family:inherit;font-size:inherit}
+
+#app{display:flex;flex-direction:column;height:100%;max-width:var(--max-w);margin:0 auto;padding-top:var(--safe-top)}
+@media(min-width:768px){#app{border-left:1px solid var(--border);border-right:1px solid var(--border)}body{background:#f0ece5}}
+
+/* ─── Header ─── */
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(250,246,241,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-logo{font-size:28px;line-height:1}
+.header-title{font-family:'Caveat',cursive;font-size:22px;font-weight:700;color:var(--text)}
+.header-sub{font-size:10px;color:var(--text-muted);margin-top:-2px}
+.header-right{display:flex;gap:6px}
+
+/* ─── Buttons ─── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:none;cursor:pointer;font-weight:500;font-size:13px;border-radius:12px;transition:all 0.2s;font-family:inherit}
+.btn-primary{padding:8px 16px;background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(255,140,107,0.3)}
+.btn-default{padding:8px 16px;background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
+.btn-ghost{padding:5px 8px;background:none;color:var(--text-muted)}
+.btn-sm{padding:6px 12px;font-size:12px;border-radius:10px}
+
+/* ─── Cat Tabs ─── */
+.cat-tabs{flex-shrink:0;display:flex;padding:10px 18px;gap:8px;background:var(--bg);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-tab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.25s;border:2px solid transparent;white-space:nowrap;font-family:inherit;background:var(--bg-card);color:var(--text-muted);box-shadow:var(--shadow)}
+.cat-tab.active-all{background:linear-gradient(135deg,var(--dende-light),var(--buu-light));color:var(--text);border-color:var(--together)}
+.cat-tab.active-dende{background:var(--dende-bg);color:var(--dende);border-color:var(--dende)}
+.cat-tab.active-buu{background:var(--buu-bg);color:var(--buu);border-color:var(--buu)}
+.cat-tab.active-together{background:var(--together-bg);color:var(--together);border-color:var(--together)}
+
+/* ─── Content ─── */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 18px 24px;padding-bottom:calc(80px + var(--safe-bottom))}
+
+/* ─── Stats Banner ─── */
+.stats-banner{display:flex;gap:8px;padding:14px 0;overflow-x:auto}
+.stats-banner::-webkit-scrollbar{display:none}
+.stat-pill{flex-shrink:0;padding:8px 16px;border-radius:16px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;box-shadow:var(--shadow)}
+.stat-pill.dende{background:var(--dende-bg);color:var(--dende)}
+.stat-pill.buu{background:var(--buu-bg);color:var(--buu)}
+.stat-pill.together{background:var(--together-bg);color:var(--together)}
+.stat-pill.total{background:var(--bg-card);color:var(--text)}
+
+/* ─── Timeline ─── */
+.timeline-section{margin-bottom:24px}
+.timeline-year{font-family:'Caveat',cursive;font-size:32px;font-weight:700;color:var(--text);margin-bottom:4px}
+.timeline-month{font-size:13px;font-weight:600;color:var(--text-muted);margin:12px 0 8px;display:flex;align-items:center;gap:6px}
+.timeline-month::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── Photo Grid ─── */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.photo-card{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;aspect-ratio:1;animation:fadeIn 0.3s ease both}
+.photo-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
+.photo-card:active img{transform:scale(1.05)}
+.photo-card .cat-badge{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:700}
+.photo-card .cat-badge.dende{background:var(--dende)}
+.photo-card .cat-badge.buu{background:var(--buu)}
+.photo-card .cat-badge.together{background:var(--together)}
+.photo-card .memo-dot{position:absolute;bottom:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+
+/* ─── Growth Chart ─── */
+.growth-section{background:var(--bg-card);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.growth-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.growth-chart{display:flex;align-items:end;gap:3px;height:100px;padding-top:10px}
+.growth-bar-group{flex:1;display:flex;gap:2px;align-items:end}
+.growth-bar{flex:1;border-radius:4px 4px 0 0;transition:height 0.5s;min-width:8px}
+.growth-bar.dende{background:var(--dende)}
+.growth-bar.buu{background:var(--buu)}
+.growth-bar.together{background:var(--together)}
+.growth-label{font-size:8px;color:var(--text-dim);text-align:center;margin-top:3px}
+
+/* ─── Slideshow Settings ─── */
+.ss-settings{background:var(--bg-card);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+.ss-settings h3{font-size:15px;font-weight:700;margin-bottom:12px}
+.ss-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:6px;cursor:pointer;transition:all 0.2s;border:2px solid transparent}
+.ss-option:active{transform:scale(0.98)}
+.ss-option.selected{border-color:var(--accent);background:rgba(255,140,107,0.06)}
+.ss-option-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ss-option-text{flex:1}
+.ss-option-title{font-size:13px;font-weight:600}
+.ss-option-desc{font-size:11px;color:var(--text-muted);margin-top:1px}
+
+/* ─── Modal ─── */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(45,37,32,0.5);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.25s ease}
+@media(min-width:768px){.modal-overlay{align-items:center;padding:16px}}
+.modal{width:100%;max-width:var(--max-w);max-height:95vh;overflow-y:auto;background:var(--bg);border-radius:20px 20px 0 0;animation:slideUp 0.3s ease;-webkit-overflow-scrolling:touch}
+@media(min-width:768px){.modal{border-radius:16px;max-height:90vh}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;border-radius:20px 20px 0 0}
+.modal-header h2{font-size:16px;font-weight:700}
+.modal-body{padding:18px}
+
+/* ─── Form ─── */
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block}
+.form-input{width:100%;padding:10px 12px;border-radius:10px;font-size:13px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);outline:none}
+.form-input:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.upload-zone{width:100%;padding:20px;border-radius:12px;background:var(--bg-warm);border:2px dashed var(--border);color:var(--text-muted);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all 0.2s}
+.upload-zone:active{border-color:var(--accent)}
+.photo-previews{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.photo-preview{position:relative}
+.photo-preview img{width:50px;height:50px;border-radius:8px;object-fit:cover}
+.photo-preview .remove-btn{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:#ef4444;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
+
+/* ─── Cat Selector ─── */
+.cat-selector{display:flex;gap:8px}
+.cat-select-btn{flex:1;padding:12px;border-radius:12px;border:2px solid var(--border);background:var(--bg-card);cursor:pointer;text-align:center;transition:all 0.2s;font-family:inherit}
+.cat-select-btn .emoji{font-size:24px;display:block;margin-bottom:4px}
+.cat-select-btn .name{font-size:12px;font-weight:600}
+.cat-select-btn.sel-dende{border-color:var(--dende);background:var(--dende-bg)}
+.cat-select-btn.sel-buu{border-color:var(--buu);background:var(--buu-bg)}
+.cat-select-btn.sel-together{border-color:var(--together);background:var(--together-bg)}
+
+/* ─── Detail ─── */
+.detail-photo{width:100%;max-height:50vh;object-fit:contain;display:block;background:var(--bg-warm)}
+.detail-content{padding:18px}
+.detail-cat-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:8px}
+.detail-cat-badge.dende{background:var(--dende-bg);color:var(--dende)}
+.detail-cat-badge.buu{background:var(--buu-bg);color:var(--buu)}
+.detail-cat-badge.together{background:var(--together-bg);color:var(--together)}
+.detail-date{font-size:13px;color:var(--text-muted);margin-bottom:6px}
+.detail-age{font-size:12px;color:var(--accent);margin-bottom:8px}
+.detail-memo{font-size:14px;line-height:1.7;margin-top:10px}
+.detail-weight{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;background:var(--bg-warm);color:var(--text-muted);margin-top:8px}
+
+/* ─── Slideshow ─── */
+.slideshow{position:fixed;inset:0;z-index:300;background:#1a1510;animation:fadeIn 0.4s ease}
+.slideshow-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#1a1510}
+.slideshow-img{max-width:100%;max-height:100%;object-fit:contain;transition:opacity 0.5s ease}
+.slideshow-gradient{position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(26,21,16,0.9));pointer-events:none}
+.slideshow-progress{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);z-index:10}
+.slideshow-progress-bar{height:100%;background:var(--accent);transition:width 0.05s linear}
+.slideshow-top{position:absolute;top:10px;left:10px;right:10px;z-index:10;display:flex;justify-content:space-between;align-items:center}
+.slideshow-counter{color:rgba(255,255,255,0.5);font-size:11px}
+.slideshow-cat-badge{padding:3px 10px;border-radius:14px;font-size:10px;font-weight:600}
+.slideshow-info{position:absolute;bottom:0;left:0;right:0;padding:20px 18px 80px;z-index:10}
+.slideshow-age{font-family:'Caveat',cursive;font-size:24px;color:var(--accent)}
+.slideshow-date{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px}
+.slideshow-memo{font-size:13px;color:rgba(255,255,255,0.7);margin-top:6px;line-height:1.5}
+.slideshow-controls{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:14px;z-index:10}
+.ss-ctrl{background:rgba(255,255,255,0.15);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.ss-play{width:48px;height:48px;background:rgba(255,140,107,0.3);border:2px solid var(--accent);font-size:18px}
+
+/* ─── Compare View (split screen) ─── */
+.compare-wrap{position:absolute;inset:0;display:flex}
+.compare-half{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#1a1510}
+.compare-half img{max-width:100%;max-height:100%;object-fit:contain}
+.compare-divider{width:3px;background:rgba(255,255,255,0.3);z-index:5}
+.compare-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:3px 12px;border-radius:14px;font-size:11px;font-weight:700;color:#fff;z-index:5}
+.compare-label.dende{background:var(--dende)}
+.compare-label.buu{background:var(--buu)}
+
+/* ─── Toast & FAB ─── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:14px;font-size:13px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,0.15);animation:slideUp 0.3s ease}
+.toast.success{background:#065f46;color:#6ee7b7}.toast.error{background:#7f1d1d;color:#fca5a5}.toast.info{background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
+.fab{position:fixed;bottom:22px;right:calc(50% - var(--max-w)/2 + 16px);width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;box-shadow:0 4px 16px rgba(255,140,107,0.4);display:flex;align-items:center;justify-content:center;z-index:90;font-size:22px;color:#fff;transition:transform 0.2s}
+.fab:active{transform:scale(0.92)}
+@media(max-width:720px){.fab{right:16px}}
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-muted)}
+.empty-state .big{font-size:48px;margin-bottom:12px}
+.empty-state p{font-size:15px}.empty-state .hint{font-size:13px;margin-top:6px;color:var(--text-dim)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){.hide-mobile{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="header-logo">🐾</div>
+      <div><div class="header-title">덴데 & 부우</div><div class="header-sub" id="headerSub">우리 고양이 성장 기록</div></div>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-primary btn-sm" onclick="showAddModal()">+ 사진</button>
+    </div>
+  </div>
+  <div class="cat-tabs" id="catTabs"></div>
+  <div class="content" id="content"></div>
+</div>
+<div id="modalContainer"></div>
+<div id="toastContainer"></div>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbwAQEvwQEAu45ShEyJKjZainLeu1TOXqxTI-4JkjrMCcjBjDxjZSQyXxWzSp4NuenIC/exec";
+
+// 덴데/부우 생일 (월령 계산용) - 동구님이 나중에 수정
+const BIRTHDAYS = { dende: '2016-02-11', buu: '2026-08-04' };
+
+let state = { entries: [], catFilter: 'all' }; // all, dende, buu, together
+const CACHE = 'catjournal_v1';
+const cacheLocal=()=>{try{localStorage.setItem(CACHE,JSON.stringify(state.entries))}catch{}};
+const loadCache=()=>{try{return JSON.parse(localStorage.getItem(CACHE))}catch{return null}};
+
+const CAT_NAMES = { dende:'덴데', buu:'부우', together:'함께' };
+const CAT_EMOJI = { dende:'🧡', buu:'💙', together:'💜' };
+const CAT_COLORS = { dende:'var(--dende)', buu:'var(--buu)', together:'var(--together)' };
+
+function getMonthAge(birthStr, dateStr) {
+  if (!birthStr || !dateStr) return null;
+  const b = new Date(birthStr), d = new Date(dateStr);
+  const months = (d.getFullYear()-b.getFullYear())*12 + (d.getMonth()-b.getMonth());
+  return months >= 0 ? months : null;
+}
+
+function fmtAge(months) {
+  if (months === null) return '';
+  if (months < 12) return `${months}개월`;
+  const y = Math.floor(months/12), m = months%12;
+  return m > 0 ? `${y}년 ${m}개월` : `${y}년`;
+}
+
+function fmtDate(d){if(!d)return'';const dt=new Date(d);return`${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}`}
+function fmtDateFull(d){if(!d)return'';const dt=new Date(d);return`${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`}
+const genId=()=>Date.now().toString(36)+Math.random().toString(36).substr(2,5);
+
+const API={
+  async getAll(){try{const r=await fetch(API_URL+'?action=getAll');const d=await r.json();return d.success?d.entries:null}catch{return null}},
+  async add(e){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',entry:e})});return await r.json()}catch{return null}},
+  async del(id){try{await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'delete',id})})}catch{}},
+  async upload(b64,fn,dt){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'uploadPhoto',base64:b64,fileName:fn,date:dt,mimeType:'image/jpeg'})});return await r.json()}catch{return null}},
+};
+
+function showToast(m,t='info'){document.getElementById('toastContainer').innerHTML=`<div class="toast ${t}">${m}</div>`;setTimeout(()=>document.getElementById('toastContainer').innerHTML='',3000)}
+
+async function doSync(){
+  const d=await API.getAll();
+  if(d){state.entries=d.map(e=>({...e,cat:e.tripGroup||'dende'}));cacheLocal();render();showToast('동기화 완료!','success')}
+}
+
+function getFiltered(){
+  let es = state.entries;
+  if(state.catFilter!=='all') es = es.filter(e=>e.cat===state.catFilter);
+  return es.sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+
+// ─── Cat Tabs ───────────────────────────────────────────────────
+function renderCatTabs(){
+  const counts = {all:state.entries.length, dende:state.entries.filter(e=>e.cat==='dende').length, buu:state.entries.filter(e=>e.cat==='buu').length, together:state.entries.filter(e=>e.cat==='together').length};
+  const tabs = [
+    {id:'all',label:'전체',emoji:'📸'},
+    {id:'dende',label:'덴데',emoji:'🧡'},
+    {id:'buu',label:'부우',emoji:'💙'},
+    {id:'together',label:'함께',emoji:'💜'},
+  ];
+  document.getElementById('catTabs').innerHTML = tabs.map(t=>`<button class="cat-tab ${state.catFilter===t.id?'active-'+t.id:''}" onclick="state.catFilter='${t.id}';render()">${t.emoji} ${t.label} <span style="opacity:0.6">${counts[t.id]}</span></button>`).join('');
+}
+
+// ─── Main Render ────────────────────────────────────────────────
+function render(){
+  renderCatTabs();
+  const el = document.getElementById('content');
+  const es = getFiltered();
+  
+  if(!es.length){
+    el.innerHTML=`<div class="empty-state"><div class="big">🐱</div><p>아직 사진이 없어요</p><p class="hint">덴데와 부우의 사진을 올려보세요!</p></div>`;
+    return;
+  }
+
+  // Stats
+  let html = renderStats();
+  
+  // Slideshow button
+  html += renderSlideshowOptions();
+  
+  // Growth chart
+  html += renderGrowthChart(es);
+  
+  // Timeline grouped by year > month
+  html += renderTimeline(es);
+  
+  // FAB
+  html += `<button class="fab" onclick="showAddModal()">+</button>`;
+  
+  el.innerHTML = html;
+}
+
+function renderStats(){
+  const dc=state.entries.filter(e=>e.cat==='dende').length;
+  const bc=state.entries.filter(e=>e.cat==='buu').length;
+  const tc=state.entries.filter(e=>e.cat==='together').length;
+  return`<div class="stats-banner"><div class="stat-pill total">📸 전체 ${state.entries.length}장</div><div class="stat-pill dende">🧡 덴데 ${dc}</div><div class="stat-pill buu">💙 부우 ${bc}</div><div class="stat-pill together">💜 함께 ${tc}</div></div>`;
+}
+
+function renderSlideshowOptions(){
+  return`<div class="ss-settings"><h3>🎬 슬라이드쇼</h3>
+    <div class="ss-option" onclick="startSS('all','timeline')"><div class="ss-option-icon" style="background:var(--bg-warm)">📸</div><div class="ss-option-text"><div class="ss-option-title">전체 타임라인</div><div class="ss-option-desc">시간순으로 모든 사진</div></div></div>
+    <div class="ss-option" onclick="startSS('dende','timeline')"><div class="ss-option-icon" style="background:var(--dende-bg)">🧡</div><div class="ss-option-text"><div class="ss-option-title">덴데 성장기</div><div class="ss-option-desc">덴데의 시간순 사진</div></div></div>
+    <div class="ss-option" onclick="startSS('buu','timeline')"><div class="ss-option-icon" style="background:var(--buu-bg)">💙</div><div class="ss-option-text"><div class="ss-option-title">부우 성장기</div><div class="ss-option-desc">부우의 시간순 사진</div></div></div>
+    <div class="ss-option" onclick="startSS('together','timeline')"><div class="ss-option-icon" style="background:var(--together-bg)">💜</div><div class="ss-option-text"><div class="ss-option-title">함께 모음</div><div class="ss-option-desc">둘이 함께 찍은 사진</div></div></div>
+    <div class="ss-option" onclick="startSS('compare','compare')"><div class="ss-option-icon" style="background:linear-gradient(135deg,var(--dende-light),var(--buu-light))">🔀</div><div class="ss-option-text"><div class="ss-option-title">나란히 성장 비교</div><div class="ss-option-desc">같은 시기 덴데&부우 반반 화면</div></div></div>
+    <div class="ss-option" onclick="startSS('all','yearly')"><div class="ss-option-icon" style="background:var(--bg-warm)">📅</div><div class="ss-option-text"><div class="ss-option-title">연도별 하이라이트</div><div class="ss-option-desc">연도당 랜덤 사진으로 빠르게</div></div></div>
+  </div>`;
+}
+
+function renderGrowthChart(es){
+  // Count photos per month per cat
+  const months={};
+  es.forEach(e=>{const ym=e.date?.substring(0,7);if(!ym)return;if(!months[ym])months[ym]={dende:0,buu:0,together:0};if(e.cat)months[ym][e.cat]++});
+  const sorted=Object.entries(months).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
+  if(sorted.length<2)return'';
+  const max=Math.max(...sorted.map(([,v])=>v.dende+v.buu+v.together),1);
+  return`<div class="growth-section"><div class="growth-title">📊 월별 사진 수</div><div class="growth-chart">${sorted.map(([ym,v])=>`<div style="flex:1;text-align:center"><div class="growth-bar-group"><div class="growth-bar dende" style="height:${(v.dende/max)*80}px"></div><div class="growth-bar buu" style="height:${(v.buu/max)*80}px"></div><div class="growth-bar together" style="height:${(v.together/max)*80}px"></div></div><div class="growth-label">${ym.substring(5)}</div></div>`).join('')}</div></div>`;
+}
+
+function renderTimeline(es){
+  const groups={};
+  es.forEach(e=>{
+    const yr=new Date(e.date).getFullYear();
+    const mo=new Date(e.date).getMonth()+1;
+    if(!groups[yr])groups[yr]={};
+    if(!groups[yr][mo])groups[yr][mo]=[];
+    groups[yr][mo].push(e);
+  });
+  
+  let html='';
+  const years=Object.keys(groups).sort((a,b)=>b-a);
+  years.forEach(yr=>{
+    html+=`<div class="timeline-section"><div class="timeline-year">${yr}</div>`;
+    const months=Object.keys(groups[yr]).sort((a,b)=>b-a);
+    months.forEach(mo=>{
+      const entries=groups[yr][mo];
+      html+=`<div class="timeline-month">${mo}월 · ${entries.length}장</div>`;
+      html+=`<div class="photo-grid">${entries.map(e=>{
+        const catClass=e.cat||'dende';
+        const initial=catClass==='dende'?'D':catClass==='buu'?'B':'♥';
+        return`<div class="photo-card" onclick="showDetail('${e.id}')"><img src="${e.photos?.[0]||''}" loading="lazy" onerror="this.style.display='none'"><div class="cat-badge ${catClass}">${initial}</div>${e.memo?'<div class="memo-dot"></div>':''}</div>`;
+      }).join('')}</div>`;
+    });
+    html+=`</div>`;
+  });
+  return html;
+}
+
+// ─── Detail ─────────────────────────────────────────────────────
+function showDetail(id){
+  const e=state.entries.find(x=>x.id===id);if(!e)return;
+  const ps=e.photos||[];
+  const catClass=e.cat||'dende';
+  const catName=CAT_NAMES[catClass]||catClass;
+  const age=e.cat==='together'?null:getMonthAge(BIRTHDAYS[e.cat],e.date);
+  
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal">${ps.length?`<div style="position:relative;background:var(--bg-warm)"><img class="detail-photo" id="detailImg" src="${ps[0]}"><button class="btn-ghost" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.3);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center" onclick="closeModal()"><span style="color:#fff;font-size:16px">✕</span></button></div>`:''}<div class="detail-content"><div class="detail-cat-badge ${catClass}">${CAT_EMOJI[catClass]} ${catName}</div><div class="detail-date">${fmtDateFull(e.date)}</div>${age!==null?`<div class="detail-age">🎂 ${fmtAge(age)}</div>`:''}<div>${e.memo?`<div class="detail-memo">${e.memo}</div>`:''}${e.country?`<div class="detail-weight">⚖️ ${e.country}</div>`:''}</div><div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-default" style="flex:1" onclick="closeModal();startSS('${e.cat}','timeline')">▶ ${catName} 슬라이드</button><button class="btn btn-default" style="color:#ef4444;border-color:rgba(239,68,68,0.2)" onclick="deleteEntry('${e.id}')">🗑</button></div></div></div></div>`;
+}
+
+// ─── Add Modal ──────────────────────────────────────────────────
+let addPhotos=[];
+function showAddModal(){
+  addPhotos=[];
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal"><div class="modal-header"><h2>📸 사진 추가</h2><button class="btn btn-ghost" onclick="closeModal()">✕</button></div><div class="modal-body">
+    <div class="form-group"><label class="form-label">🐱 누구 사진?</label><div class="cat-selector"><button class="cat-select-btn" id="catBtn_dende" onclick="selectCat('dende')"><span class="emoji">🧡</span><span class="name">덴데</span></button><button class="cat-select-btn" id="catBtn_buu" onclick="selectCat('buu')"><span class="emoji">💙</span><span class="name">부우</span></button><button class="cat-select-btn" id="catBtn_together" onclick="selectCat('together')"><span class="emoji">💜</span><span class="name">함께</span></button></div><input type="hidden" id="entryCat" value=""></div>
+    <div class="form-group"><label class="form-label">📸 사진 (Drive 저장)</label><input type="file" id="photoInput" multiple accept="image/*" style="display:none" onchange="handlePhotoUpload(this)"><button class="upload-zone" onclick="document.getElementById('photoInput').click()">📷 사진 선택</button><div class="photo-previews" id="photoPreviews"></div></div>
+    <div class="form-row"><div class="form-group"><label class="form-label">📅 날짜</label><input id="entryDate" type="date" class="form-input" value="${new Date().toISOString().split('T')[0]}"></div><div class="form-group"><label class="form-label">⚖️ 체중 (선택)</label><input id="entryWeight" class="form-input" placeholder="3.5kg"></div></div>
+    <div class="form-group"><label class="form-label">📝 메모</label><textarea id="entryMemo" class="form-input" style="min-height:50px;resize:vertical" placeholder="오늘의 덴데/부우는..."></textarea></div>
+    <button class="btn btn-primary" id="submitBtn" style="width:100%;padding:12px 0;font-size:14px;border-radius:12px" onclick="submitEntry()">☁️ 저장하기</button>
+  </div></div></div>`;
+}
+
+let selectedCat='';
+function selectCat(cat){
+  selectedCat=cat;document.getElementById('entryCat').value=cat;
+  ['dende','buu','together'].forEach(c=>{document.getElementById('catBtn_'+c).className='cat-select-btn'+(c===cat?' sel-'+c:'')});
+}
+
+function handlePhotoUpload(input){Array.from(input.files||[]).forEach(file=>{const reader=new FileReader();reader.onload=e=>{addPhotos.push({data:e.target.result,name:file.name});renderPhotoPreviews()};reader.readAsDataURL(file)});input.value=''}
+function renderPhotoPreviews(){const el=document.getElementById('photoPreviews');if(!el)return;el.innerHTML=addPhotos.map((p,i)=>`<div class="photo-preview"><img src="${p.data}"><button class="remove-btn" onclick="addPhotos.splice(${i},1);renderPhotoPreviews()">✕</button></div>`).join('')}
+
+async function submitEntry(){
+  const cat=document.getElementById('entryCat').value;
+  const date=document.getElementById('entryDate').value;
+  if(!cat){alert('덴데/부우/함께 중 선택해주세요!');return}
+  if(!date){alert('날짜를 입력해주세요!');return}
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='☁️ 업로드 중...';
+  
+  let photoList=[];
+  for(let i=0;i<addPhotos.length;i++){btn.textContent=`☁️ 사진 ${i+1}/${addPhotos.length}...`;const r=await API.upload(addPhotos[i].data,addPhotos[i].name,date);if(r?.success)photoList.push(r.url)}
+  
+  const entry={
+    date, location:'', country:document.getElementById('entryWeight').value,
+    lat:null, lng:null,
+    memo:document.getElementById('entryMemo').value,
+    tags:[cat], favorite:false,
+    tripGroup:cat, // cat type stored as tripGroup
+    photos:photoList, music:'',
+    id:genId()
+  };
+  
+  const res=await API.add(entry);
+  if(res?.success){state.entries.push({...entry,cat});cacheLocal();showToast('저장 완료! 🐾','success')}
+  else{showToast('저장 실패','error')}
+  closeModal();render();
+}
+
+async function deleteEntry(id){if(!confirm('삭제할까요?'))return;state.entries=state.entries.filter(e=>e.id!==id);cacheLocal();closeModal();render();showToast('삭제 완료');await API.del(id)}
+
+// ─── Slideshow ──────────────────────────────────────────────────
+let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=4500,ssTimer=null,ssPTimer=null,ssActive=false,ssMode='timeline';
+
+function startSS(catFilter, mode){
+  ssMode=mode;ssActive=true;ssPlaying=true;ssIdx=0;
+  
+  let entries=state.entries.slice();
+  if(catFilter!=='all'&&catFilter!=='compare')entries=entries.filter(e=>e.cat===catFilter);
+  entries.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  
+  if(mode==='yearly'){
+    // Pick 1~2 random per year
+    const byYear={};entries.forEach(e=>{const y=new Date(e.date).getFullYear();if(!byYear[y])byYear[y]=[];byYear[y].push(e)});
+    entries=[];Object.values(byYear).forEach(yearEs=>{
+      const shuffled=[...yearEs].sort(()=>Math.random()-0.5);
+      entries.push(...shuffled.slice(0,2));
+    });
+    entries.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  }
+  
+  if(mode==='compare'){
+    // Build pairs: same month dende vs buu
+    const dende=state.entries.filter(e=>e.cat==='dende').sort((a,b)=>new Date(a.date)-new Date(b.date));
+    const buu=state.entries.filter(e=>e.cat==='buu').sort((a,b)=>new Date(a.date)-new Date(b.date));
+    ssPhotos=[];
+    const months=new Set();
+    [...dende,...buu].forEach(e=>months.add(e.date?.substring(0,7)));
+    [...months].sort().forEach(ym=>{
+      const d=dende.find(e=>e.date?.startsWith(ym));
+      const b=buu.find(e=>e.date?.startsWith(ym));
+      if(d&&b)ssPhotos.push({type:'compare',dende:d,buu:b,date:ym});
+      else if(d)ssPhotos.push({type:'single',entry:d,date:ym});
+      else if(b)ssPhotos.push({type:'single',entry:b,date:ym});
+    });
+    if(!ssPhotos.length){showToast('비교할 사진이 없습니다');return}
+    renderCompareSlideshow();ssSch();return;
+  }
+  
+  ssPhotos=[];
+  entries.forEach(e=>(e.photos||[]).forEach(u=>ssPhotos.push({u,cat:e.cat,date:e.date,memo:e.memo,age:e.cat!=='together'?getMonthAge(BIRTHDAYS[e.cat],e.date):null})));
+  if(!ssPhotos.length){showToast('사진이 없습니다');return}
+  renderSSNormal();ssSch();
+}
+
+function renderSSNormal(){
+  const c=ssPhotos[ssIdx];
+  const catBg=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';
+  document.getElementById('modalContainer').innerHTML=`<div class="slideshow"><div class="slideshow-img-wrap"><img class="slideshow-img" id="ssImg" src="${c.u}"><div class="slideshow-gradient"></div></div><div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssPBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><span class="slideshow-cat-badge" style="background:${catBg}">${CAT_EMOJI[c.cat]} ${CAT_NAMES[c.cat]}</span><button class="ss-ctrl" onclick="ssClose()" style="background:rgba(0,0,0,0.4)">✕</button></div><div class="slideshow-info">${c.age!==null?`<div class="slideshow-age">${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}</div><div class="slideshow-controls"><button class="ss-ctrl" onclick="ssPrev()">◀</button><button class="ss-ctrl ss-play" id="ssPlayBtn" onclick="ssTog()">${ssPlaying?'⏸':'▶'}</button><button class="ss-ctrl" onclick="ssNext()">▶</button></div></div>`;
+}
+
+function renderCompareSlideshow(){
+  const c=ssPhotos[ssIdx];
+  let inner='';
+  if(c.type==='compare'){
+    inner=`<div class="compare-wrap"><div class="compare-half"><div class="compare-label dende">🧡 덴데</div><img src="${c.dende.photos?.[0]||''}"></div><div class="compare-divider"></div><div class="compare-half"><div class="compare-label buu">💙 부우</div><img src="${c.buu.photos?.[0]||''}"></div></div>`;
+  }else{
+    const e=c.entry;
+    inner=`<div class="slideshow-img-wrap"><img class="slideshow-img" src="${e.photos?.[0]||''}"><div class="slideshow-gradient"></div></div>`;
+  }
+  document.getElementById('modalContainer').innerHTML=`<div class="slideshow">${inner}<div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssPBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><span class="slideshow-cat-badge" style="background:var(--together)">🔀 비교</span><button class="ss-ctrl" onclick="ssClose()" style="background:rgba(0,0,0,0.4)">✕</button></div><div class="slideshow-info"><div class="slideshow-age">${c.date}</div></div><div class="slideshow-controls"><button class="ss-ctrl" onclick="ssPrev()">◀</button><button class="ss-ctrl ss-play" onclick="ssTog()">${ssPlaying?'⏸':'▶'}</button><button class="ss-ctrl" onclick="ssNext()">▶</button></div></div>`;
+}
+
+function ssTransition(){
+  if(ssMode==='compare'){renderCompareSlideshow();return}
+  const img=document.getElementById('ssImg');if(!img)return;
+  img.style.transition='opacity 0.4s';img.style.opacity='0';
+  setTimeout(()=>{
+    const c=ssPhotos[ssIdx];img.src=c.u;
+    const catBg=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';
+    img.onload=()=>{img.style.opacity='1'};if(img.complete)img.style.opacity='1';
+    // update info
+    const info=document.querySelector('.slideshow-info');
+    if(info)info.innerHTML=`${c.age!==null?`<div class="slideshow-age">${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}`;
+    const counter=document.querySelector('.slideshow-counter');if(counter)counter.textContent=`${ssIdx+1}/${ssPhotos.length}`;
+    const badge=document.querySelector('.slideshow-cat-badge');if(badge){badge.style.background=catBg;badge.innerHTML=`${CAT_EMOJI[c.cat]} ${CAT_NAMES[c.cat]}`}
+  },420);
+}
+
+function ssSch(){clearTimeout(ssTimer);clearInterval(ssPTimer);if(!ssPlaying||!ssActive)return;const start=Date.now();ssPTimer=setInterval(()=>{const bar=document.getElementById('ssPBar');if(bar)bar.style.width=Math.min((Date.now()-start)/ssDur*100,100)+'%'},30);ssTimer=setTimeout(()=>{ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();ssSch()},ssDur)}
+function ssTog(){ssPlaying=!ssPlaying;const btn=document.getElementById('ssPlayBtn');if(btn)btn.textContent=ssPlaying?'⏸':'▶';if(ssPlaying)ssSch();else{clearTimeout(ssTimer);clearInterval(ssPTimer)}}
+function ssNext(){clearTimeout(ssTimer);clearInterval(ssPTimer);ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();if(ssPlaying)setTimeout(ssSch,500)}
+function ssPrev(){clearTimeout(ssTimer);clearInterval(ssPTimer);ssIdx=(ssIdx-1+ssPhotos.length)%ssPhotos.length;ssTransition();if(ssPlaying)setTimeout(ssSch,500)}
+function ssClose(){ssActive=false;clearTimeout(ssTimer);clearInterval(ssPTimer);document.getElementById('modalContainer').innerHTML=''}
+
+function closeModal(){document.getElementById('modalContainer').innerHTML=''}
+
+async function init(){
+  const cached=loadCache();
+  if(cached&&cached.length){state.entries=cached.map(e=>({...e,cat:e.tripGroup||'dende'}));render()}
+  else{document.getElementById('content').innerHTML='<div class="empty-state"><div class="big">🐱</div><p>불러오는 중...</p></div>'}
+  await doSync();
+}
+init();
+</script>
+</body>
+</html>
