@@ -394,7 +394,7 @@ async function submitEntry(){const loc=document.getElementById('entryLocation').
 function showPinList(location){const es=state.entries.filter(e=>e.location===location).sort((a,b)=>new Date(b.date)-new Date(a.date));document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal" style="max-height:80vh"><div class="modal-header"><h2>📍 ${location} (${es.length})</h2><button class="btn btn-ghost" onclick="closeModal()">${icon('x',16,'var(--text-muted)')}</button></div><div style="padding:10px">${es.map(e=>`<div class="pin-list-item" onclick="closeModal();setTimeout(()=>showDetail('${e.id}'),100)"><div class="location-thumb"><img src="${e.photos?.[0]||''}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${fmtDate(e.date)}</div>${e.memo?`<div style="font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.memo}</div>`:''}${e.tripGroup?`<div style="font-size:10px;color:var(--accent)">📁 ${e.tripGroup}</div>`:''}</div>${e.favorite?icon('heartFill',12,'#ef4444'):''}</div>`).join('')}</div></div></div>`}
 
 // ─── Slideshow (검은화면 페이드 전환) ───────────────────────────
-let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=5500,ssTimer=null,ssProgressTimer=null,ssAudio=null,ssActive=false;
+let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=4500,ssTimer=null,ssProgressTimer=null,ssAudio=null,ssActive=false;
 function startSlideshow(){_startSS(getFiltered())}
 function startSlideshowGroup(tn){_startSS(state.entries.filter(e=>e.tripGroup===tn))}
 function startSlideshowSingle(id){_startSS(state.entries.filter(e=>e.id===id))}
