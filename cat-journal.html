@@ -60,15 +60,11 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 .stat-chip.together{border-color:rgba(233,69,96,0.3);color:var(--together-light)}
 .stat-chip.total{border-color:rgba(247,183,49,0.3);color:var(--accent)}
 
-/* ─── Slideshow Options ─── */
-.ss-box{background:var(--bg-card);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid var(--border)}
-.ss-box h3{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:12px;letter-spacing:0.5px}
-.ss-opt{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:5px;cursor:pointer;border-radius:10px;border:1px solid transparent;background:var(--bg-hover);transition:all 0.2s}
-.ss-opt:active{transform:scale(0.98)}
-.ss-opt:hover{border-color:var(--accent)}
-.ss-opt-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg);border:1px solid var(--border)}
-.ss-opt-title{font-size:13px;font-weight:600}
-.ss-opt-desc{font-size:11px;color:var(--text-muted);margin-top:1px}
+/* ─── Slideshow Bar (fixed below tabs) ─── */
+.ss-bar{flex-shrink:0;display:flex;gap:6px;padding:8px 18px;background:var(--bg);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ss-bar::-webkit-scrollbar{display:none}
+.ss-chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);white-space:nowrap;font-family:inherit;display:flex;align-items:center;gap:5px;transition:all 0.2s}
+.ss-chip:active{transform:scale(0.96);background:var(--bg-hover)}
 
 /* ─── Timeline ─── */
 .tl-year{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--accent);margin:18px 0 6px;text-shadow:0 0 12px rgba(247,183,49,0.3)}
@@ -184,6 +180,7 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
     </div>
   </div>
   <div class="cat-tabs" id="catTabs"></div>
+  <div class="ss-bar" id="ssBar"></div>
   <div class="content" id="content"></div>
 </div>
 <div id="modalContainer"></div>
@@ -236,10 +233,11 @@ function renderCatTabs(){
 
 function render(){
   renderCatTabs();
+  renderSSBar();
   const el=document.getElementById('content');
   const es=getFiltered();
   if(!es.length){el.innerHTML=`<div class="empty-state"><div class="big">🐱</div><p style="font-size:15px">아직 사진이 없어요</p><p style="font-size:12px;margin-top:6px;color:var(--text-dim)">덴데와 부우의 사진을 올려보세요!</p></div>`;return}
-  let html=renderSSOptions()+renderTimeline(es);
+  let html=renderTimeline(es);
   html+=`<button class="fab" onclick="showAddModal()">+</button>`;
   el.innerHTML=html;
 }
@@ -249,14 +247,8 @@ function renderStats(){
   return`<div class="stats-row"><div class="stat-chip total">📸 전체 ${state.entries.length}</div><div class="stat-chip dende">🐱 덴데 ${dc}</div><div class="stat-chip buu">🐱 부우 ${bc}</div><div class="stat-chip together">💕 함께 ${tc}</div></div>`;
 }
 
-function renderSSOptions(){
-  return`<div class="ss-box"><h3>▶ SLIDESHOW</h3>
-  <div class="ss-opt" onclick="startSS('all','timeline')"><div class="ss-opt-icon">📸</div><div><div class="ss-opt-title">전체 타임라인</div><div class="ss-opt-desc">시간순 모든 사진</div></div></div>
-  <div class="ss-opt" onclick="startSS('dende','timeline')"><div class="ss-opt-icon" style="border-color:var(--dende)">🧡</div><div><div class="ss-opt-title">덴데 성장기</div><div class="ss-opt-desc">덴데만 시간순</div></div></div>
-  <div class="ss-opt" onclick="startSS('buu','timeline')"><div class="ss-opt-icon" style="border-color:var(--buu)">🧡</div><div><div class="ss-opt-title">부우 성장기</div><div class="ss-opt-desc">부우만 시간순</div></div></div>
-  <div class="ss-opt" onclick="startSS('together','timeline')"><div class="ss-opt-icon" style="border-color:var(--together)">💕</div><div><div class="ss-opt-title">함께 모음</div><div class="ss-opt-desc">둘이 함께 찍은 사진</div></div></div>
-  <div class="ss-opt" onclick="showYearPicker()"><div class="ss-opt-icon">📅</div><div><div class="ss-opt-title">연도별 성장기</div><div class="ss-opt-desc">연도 선택 → 월별 랜덤 사진</div></div></div>
-  </div>`;
+function renderSSBar(){
+  document.getElementById('ssBar').innerHTML=`<div class="ss-chip" onclick="startSS('all','timeline')">▶ 전체</div><div class="ss-chip" onclick="startSS('dende','timeline')">🧡 덴데</div><div class="ss-chip" onclick="startSS('buu','timeline')">🧡 부우</div><div class="ss-chip" onclick="startSS('together','timeline')">💕 함께</div><div class="ss-chip" onclick="showYearPicker()">📅 연도별</div>`;
 }
 
 function renderTimeline(es){
