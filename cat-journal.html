@@ -239,7 +239,7 @@ function render(){
   const el=document.getElementById('content');
   const es=getFiltered();
   if(!es.length){el.innerHTML=`<div class="empty-state"><div class="big">🐱</div><p style="font-size:15px">아직 사진이 없어요</p><p style="font-size:12px;margin-top:6px;color:var(--text-dim)">덴데와 부우의 사진을 올려보세요!</p></div>`;return}
-  let html=renderStats()+renderSSOptions()+renderTimeline(es);
+  let html=renderSSOptions()+renderTimeline(es);
   html+=`<button class="fab" onclick="showAddModal()">+</button>`;
   el.innerHTML=html;
 }
