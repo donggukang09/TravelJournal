@@ -4,195 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#1a1a2e">
-<title>🐾 덴데 & 부우</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>🐾 DENDE & BOO</title>
 <link rel="manifest" href="cat-manifest.json">
 <link rel="apple-touch-icon" href="cat-icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#1a1a2e;--bg2:#16213e;--card:#0f3460;--card-light:#1a3a6e;
-  --dende:#6b5240;--dende-light:#d4a882;--dende-bg:rgba(107,82,64,0.15);
-  --buu:#e8913a;--buu-light:#f0c88a;--buu-bg:rgba(232,145,58,0.15);
-  --together:#e94560;--together-light:#f0a0b0;--together-bg:rgba(233,69,96,0.15);
-  --accent:#f7b731;--accent2:#e94560;
-  --text:#eaeaea;--text-muted:#a0a0b8;--text-dim:#606080;
-  --border:#2a2a4e;--pixel:4px;
+  --bg:#0a0a0f;--bg-card:#14141f;--bg-hover:#1a1a2e;
+  --dende:#c97b5a;--dende-light:#f0c4a8;--dende-bg:rgba(201,123,90,0.12);
+  --buu:#e8a03a;--buu-light:#f5d08a;--buu-bg:rgba(232,160,58,0.12);
+  --together:#e94560;--together-light:#f5a0b0;--together-bg:rgba(233,69,96,0.12);
+  --accent:#f7b731;--accent-dark:#d49a20;
+  --text:#e8e6e3;--text-muted:#8a8a9a;--text-dim:#5a5a6a;
+  --border:#2a2a3a;
   --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
   --max-w:720px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;font-family:'DotGothic16','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px;image-rendering:pixelated}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:0}
+html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 input,select,textarea,button{font-family:inherit;font-size:inherit}
+#app{display:flex;flex-direction:column;height:100%;max-width:var(--max-w);margin:0 auto;padding-top:var(--safe-top)}
+@media(min-width:768px){#app{border-left:1px solid var(--border);border-right:1px solid var(--border)}body{background:#050508}}
 
-#app{display:flex;flex-direction:column;height:100%;max-width:var(--max-w);margin:0 auto;padding-top:var(--safe-top);position:relative}
-@media(min-width:768px){#app{border-left:2px solid var(--border);border-right:2px solid var(--border)}body{background:#0e0e20}}
-
-/* ─── Pixel border mixin ─── */
-.pixel-border{border:3px solid var(--border);box-shadow:inset -2px -2px 0 rgba(0,0,0,0.3),inset 2px 2px 0 rgba(255,255,255,0.05)}
-
-/* ─── Header ─── */
-.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg2);border-bottom:3px solid var(--border);z-index:100}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:100}
 .header-left{display:flex;align-items:center;gap:10px}
 .header-chars{display:flex;gap:2px}
-.header-title{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--accent);letter-spacing:1px}
-.header-sub{font-size:10px;color:var(--text-muted);margin-top:4px}
-.header-right{display:flex;gap:6px}
+.header-title{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--accent);letter-spacing:0.5px;margin-bottom:2px}
+.header-sub{font-size:11px;color:var(--text-muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:none;cursor:pointer;font-weight:600;font-size:13px;border-radius:10px;transition:all 0.2s;font-family:inherit}
+.btn-primary{padding:8px 16px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#1a1a2e}
+.btn-default{padding:8px 16px;background:var(--bg-card);color:var(--text);border:1px solid var(--border);border-radius:10px}
+.btn-ghost{padding:5px 8px;background:none;color:var(--text-muted);border:none}
+.btn-sm{padding:6px 12px;font-size:12px}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:2px solid;cursor:pointer;font-weight:600;font-size:12px;font-family:inherit;transition:all 0.1s;padding:7px 14px}
-.btn:active{transform:translate(1px,1px)}
-.btn-primary{background:var(--accent);color:#1a1a2e;border-color:#c99520}
-.btn-default{background:var(--card);color:var(--text);border-color:var(--border)}
-.btn-ghost{background:none;border:none;color:var(--text-muted);padding:5px 8px}
-.btn-sm{padding:5px 10px;font-size:11px}
-
-/* ─── Cat Tabs ─── */
-.cat-tabs{flex-shrink:0;display:flex;padding:8px 12px;gap:6px;background:var(--bg);border-bottom:2px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
-.cat-tabs::-webkit-scrollbar{display:none}
-.cat-tab{padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;border:2px solid var(--border);background:var(--bg2);color:var(--text-muted);white-space:nowrap;font-family:inherit;transition:all 0.1s}
-.cat-tab:active{transform:translate(1px,1px)}
-.cat-tab.active-all{background:var(--card);color:var(--accent);border-color:var(--accent)}
+/* ─── Cat Tabs (single row) ─── */
+.cat-tabs{flex-shrink:0;display:flex;padding:10px 18px;gap:8px;background:var(--bg);border-bottom:1px solid var(--border)}
+.cat-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);white-space:nowrap;font-family:inherit}
+.cat-tab:active{transform:scale(0.96)}
+.cat-tab.active-all{background:linear-gradient(135deg,rgba(201,123,90,0.15),rgba(232,160,58,0.15));color:var(--accent);border-color:var(--accent)}
 .cat-tab.active-dende{background:var(--dende-bg);color:var(--dende-light);border-color:var(--dende)}
 .cat-tab.active-buu{background:var(--buu-bg);color:var(--buu-light);border-color:var(--buu)}
 .cat-tab.active-together{background:var(--together-bg);color:var(--together-light);border-color:var(--together)}
 
-/* ─── Content ─── */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 24px;padding-bottom:calc(80px + var(--safe-bottom))}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 18px 24px;padding-bottom:calc(80px + var(--safe-bottom))}
 
 /* ─── Stats ─── */
-.stats-row{display:flex;gap:6px;padding:12px 0;overflow-x:auto}
+.stats-row{display:flex;gap:8px;padding:14px 0;overflow-x:auto}
 .stats-row::-webkit-scrollbar{display:none}
-.stat-chip{flex-shrink:0;padding:5px 12px;font-size:11px;font-weight:600;border:2px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:4px}
-.stat-chip.dende{border-color:var(--dende);color:var(--dende-light)}
-.stat-chip.buu{border-color:var(--buu);color:var(--buu-light)}
-.stat-chip.together{border-color:var(--together);color:var(--together-light)}
-.stat-chip.total{border-color:var(--accent);color:var(--accent)}
+.stat-chip{flex-shrink:0;padding:6px 14px;border-radius:16px;font-size:12px;font-weight:600;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.stat-chip.dende{border-color:rgba(201,123,90,0.3);color:var(--dende-light)}
+.stat-chip.buu{border-color:rgba(232,160,58,0.3);color:var(--buu-light)}
+.stat-chip.together{border-color:rgba(233,69,96,0.3);color:var(--together-light)}
+.stat-chip.total{border-color:rgba(247,183,49,0.3);color:var(--accent)}
+
+/* ─── Slideshow Options ─── */
+.ss-box{background:var(--bg-card);border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid var(--border)}
+.ss-box h3{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:12px;letter-spacing:0.5px}
+.ss-opt{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:5px;cursor:pointer;border-radius:10px;border:1px solid transparent;background:var(--bg-hover);transition:all 0.2s}
+.ss-opt:active{transform:scale(0.98)}
+.ss-opt:hover{border-color:var(--accent)}
+.ss-opt-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg);border:1px solid var(--border)}
+.ss-opt-title{font-size:13px;font-weight:600}
+.ss-opt-desc{font-size:11px;color:var(--text-muted);margin-top:1px}
 
 /* ─── Timeline ─── */
-.tl-year{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--accent);margin:16px 0 6px;text-shadow:2px 2px 0 rgba(0,0,0,0.5)}
-.tl-month{font-size:12px;color:var(--text-muted);margin:10px 0 6px;display:flex;align-items:center;gap:6px}
-.tl-month::after{content:'';flex:1;height:2px;background:var(--border)}
+.tl-year{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--accent);margin:18px 0 6px;text-shadow:0 0 12px rgba(247,183,49,0.3)}
+.tl-month{font-size:12px;font-weight:600;color:var(--text-muted);margin:12px 0 8px;display:flex;align-items:center;gap:8px}
+.tl-month::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* ─── Photo Grid ─── */
-.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
-.photo-card{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;border:2px solid var(--border);background:var(--bg2)}
-.photo-card img{width:100%;height:100%;object-fit:cover}
-.photo-card:active{opacity:0.8}
-.photo-card .cat-dot{position:absolute;top:3px;left:3px;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'Press Start 2P';color:#fff;background:var(--card);border:1px solid var(--border)}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.photo-card{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;aspect-ratio:1;background:var(--bg-card)}
+.photo-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
+.photo-card:active img{transform:scale(1.05)}
+.photo-card .cat-dot{position:absolute;top:5px;left:5px;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:700;color:#fff}
 .photo-card .cat-dot.dende{background:var(--dende)}
 .photo-card .cat-dot.buu{background:var(--buu)}
 .photo-card .cat-dot.together{background:var(--together)}
 
-/* ─── Growth Chart ─── */
-.growth-box{background:var(--bg2);border:3px solid var(--border);padding:14px;margin-bottom:12px}
-.growth-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:10px}
-.growth-bars{display:flex;align-items:end;gap:2px;height:80px}
-.growth-col{flex:1;display:flex;gap:1px;align-items:end}
-.growth-bar{flex:1;min-width:6px}
-.growth-bar.dende{background:#e94560}
-.growth-bar.buu{background:#f7b731}
-.growth-bar.together{background:#a78bfa}
-.growth-label{font-size:7px;color:var(--text-dim);text-align:center;margin-top:2px;font-family:'Press Start 2P'}
-
-/* ─── Slideshow Options ─── */
-.ss-box{background:var(--bg2);border:3px solid var(--border);padding:14px;margin-bottom:12px}
-.ss-box h3{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:10px}
-.ss-opt{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:4px;cursor:pointer;border:2px solid transparent;background:var(--card);transition:all 0.1s}
-.ss-opt:active{transform:translate(1px,1px)}
-.ss-opt:hover{border-color:var(--accent)}
-.ss-opt-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--bg);border:2px solid var(--border)}
-.ss-opt-title{font-size:12px;font-weight:700}
-.ss-opt-desc{font-size:10px;color:var(--text-muted);margin-top:1px}
-
 /* ─── Modal ─── */
-.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,10,20,0.85);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.2s ease}
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn 0.25s ease}
 @media(min-width:768px){.modal-overlay{align-items:center;padding:16px}}
-.modal{width:100%;max-width:var(--max-w);max-height:95vh;overflow-y:auto;background:var(--bg);border:3px solid var(--border);border-bottom:none;animation:slideUp 0.25s ease;-webkit-overflow-scrolling:touch}
-@media(min-width:768px){.modal{border-bottom:3px solid var(--border);max-height:90vh}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:3px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
-.modal-header h2{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--accent)}
-.modal-body{padding:16px}
+.modal{width:100%;max-width:var(--max-w);max-height:95vh;overflow-y:auto;background:var(--bg);border-radius:16px 16px 0 0;animation:slideUp 0.3s ease;-webkit-overflow-scrolling:touch}
+@media(min-width:768px){.modal{border-radius:14px;max-height:90vh;border:1px solid var(--border)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10;border-radius:16px 16px 0 0}
+.modal-header h2{font-size:16px;font-weight:700}
+.modal-body{padding:18px}
 
 /* ─── Detail ─── */
-.detail-photo{width:100%;max-height:50vh;object-fit:contain;display:block;background:#0a0a18}
-.detail-content{padding:16px}
-.detail-cat{display:inline-block;padding:3px 10px;font-size:10px;font-weight:700;border:2px solid;margin-bottom:8px}
-.detail-cat.dende{color:var(--dende-light);border-color:var(--dende);background:var(--dende-bg)}
-.detail-cat.buu{color:var(--buu-light);border-color:var(--buu);background:var(--buu-bg)}
-.detail-cat.together{color:var(--together-light);border-color:var(--together);background:var(--together-bg)}
-.detail-date{font-size:12px;color:var(--text-muted);margin-bottom:4px}
-.detail-age{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:8px}
-.detail-memo{font-size:14px;line-height:1.7;margin-top:10px;color:var(--text)}
-.detail-weight{display:inline-block;padding:3px 10px;font-size:10px;background:var(--bg2);border:2px solid var(--border);color:var(--text-muted);margin-top:8px}
+.detail-photo{width:100%;max-height:50vh;object-fit:contain;display:block;background:#000}
+.detail-content{padding:18px}
+.detail-cat{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:600;margin-bottom:8px}
+.detail-cat.dende{background:var(--dende-bg);color:var(--dende-light)}
+.detail-cat.buu{background:var(--buu-bg);color:var(--buu-light)}
+.detail-cat.together{background:var(--together-bg);color:var(--together-light)}
+.detail-date{font-size:13px;color:var(--text-muted);margin-bottom:4px}
+.detail-age{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--accent);margin-bottom:10px}
+.detail-memo{font-size:14px;line-height:1.7;margin-top:10px}
+.detail-weight{display:inline-block;padding:4px 12px;border-radius:10px;font-size:11px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);margin-top:8px}
+.detail-actions{display:flex;gap:8px;margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
 
 /* ─── Form ─── */
 .form-group{margin-bottom:14px}
-.form-label{font-size:10px;font-weight:700;color:var(--text-muted);margin-bottom:4px;display:block}
-.form-input{width:100%;padding:9px 12px;font-size:13px;background:var(--bg2);border:2px solid var(--border);color:var(--text);outline:none;font-family:inherit}
+.form-label{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:block}
+.form-input{width:100%;padding:10px 12px;border-radius:10px;font-size:13px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);outline:none}
 .form-input:focus{border-color:var(--accent)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.upload-zone{width:100%;padding:18px;background:var(--card);border:3px dashed var(--border);color:var(--text-muted);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all 0.1s}
+.upload-zone{width:100%;padding:18px;border-radius:12px;background:var(--bg-card);border:2px dashed var(--border);color:var(--text-muted);font-size:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all 0.2s}
 .upload-zone:active{border-color:var(--accent)}
-.photo-previews{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.photo-previews{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
 .photo-preview{position:relative}
-.photo-preview img{width:48px;height:48px;object-fit:cover;border:2px solid var(--border)}
-.photo-preview .remove-btn{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--accent2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
+.photo-preview img{width:50px;height:50px;border-radius:8px;object-fit:cover}
+.photo-preview .remove-btn{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:#ef4444;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
 
-.cat-selector{display:flex;gap:6px}
-.cat-sel-btn{flex:1;padding:10px;border:3px solid var(--border);background:var(--bg2);cursor:pointer;text-align:center;transition:all 0.1s;font-family:inherit}
-.cat-sel-btn:active{transform:translate(1px,1px)}
-.cat-sel-btn canvas{display:block;margin:0 auto 4px}
-.cat-sel-btn .name{font-size:10px;font-weight:700}
+.cat-selector{display:flex;gap:8px}
+.cat-sel-btn{flex:1;padding:12px 8px;border-radius:12px;border:2px solid var(--border);background:var(--bg-card);cursor:pointer;text-align:center;transition:all 0.2s;font-family:inherit}
+.cat-sel-btn:active{transform:scale(0.96)}
+.cat-sel-btn canvas{display:block;margin:0 auto 6px;image-rendering:pixelated;image-rendering:crisp-edges}
+.cat-sel-btn .name{font-size:12px;font-weight:600;color:var(--text-muted)}
 .cat-sel-btn.sel-dende{border-color:var(--dende);background:var(--dende-bg)}
+.cat-sel-btn.sel-dende .name{color:var(--dende-light)}
 .cat-sel-btn.sel-buu{border-color:var(--buu);background:var(--buu-bg)}
+.cat-sel-btn.sel-buu .name{color:var(--buu-light)}
 .cat-sel-btn.sel-together{border-color:var(--together);background:var(--together-bg)}
+.cat-sel-btn.sel-together .name{color:var(--together-light)}
 
 /* ─── Slideshow ─── */
-.slideshow{position:fixed;inset:0;z-index:300;background:#0a0a18;animation:fadeIn 0.3s ease}
-.slideshow-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a18}
-.slideshow-img{max-width:100%;max-height:100%;object-fit:contain;transition:opacity 0.4s}
-.slideshow-gradient{position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(10,10,24,0.9));pointer-events:none}
+.slideshow{position:fixed;inset:0;z-index:300;background:#000;animation:fadeIn 0.3s ease}
+.slideshow-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slideshow-img{max-width:100%;max-height:100%;object-fit:contain;transition:opacity 0.2s}
+.slideshow-gradient{position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,0,0,0.9));pointer-events:none}
 .slideshow-progress{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.1);z-index:10}
 .slideshow-progress-bar{height:100%;background:var(--accent)}
-.slideshow-top{position:absolute;top:8px;left:8px;right:8px;z-index:10;display:flex;justify-content:space-between;align-items:center}
-.slideshow-counter{font-family:'Press Start 2P',monospace;color:rgba(255,255,255,0.4);font-size:8px}
-.slideshow-cat-tag{padding:2px 8px;font-size:9px;font-weight:700;border:2px solid}
-.slideshow-info{position:absolute;bottom:0;left:0;right:0;padding:16px 16px 80px;z-index:10}
-.slideshow-age{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--accent);text-shadow:2px 2px 0 rgba(0,0,0,0.8)}
-.slideshow-date{font-size:11px;color:rgba(255,255,255,0.5);margin-top:4px}
-.slideshow-memo{font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px;line-height:1.5}
-.slideshow-controls{position:absolute;bottom:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:12px;z-index:10}
-.ss-ctrl{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
-.ss-ctrl:active{transform:translate(1px,1px)}
-.ss-play{width:48px;height:48px;background:rgba(247,183,49,0.2);border-color:var(--accent);font-size:16px}
+.slideshow-top{position:absolute;top:10px;left:12px;right:12px;z-index:10;display:flex;justify-content:space-between;align-items:center}
+.slideshow-counter{color:rgba(255,255,255,0.4);font-size:11px}
+.slideshow-cat-tag{padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600}
+.slideshow-info{position:absolute;bottom:0;left:0;right:0;padding:20px 18px 80px;z-index:10}
+.slideshow-age{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--accent);text-shadow:0 1px 4px rgba(0,0,0,0.8)}
+.slideshow-date{font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px}
+.slideshow-memo{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;line-height:1.5}
+.slideshow-controls{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:14px;z-index:10}
+.ss-ctrl{background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;backdrop-filter:blur(4px)}
+.ss-ctrl:active{transform:scale(0.92)}
+.ss-play{width:50px;height:50px;background:rgba(247,183,49,0.2);border:2px solid var(--accent);font-size:17px}
 
-.compare-wrap{position:absolute;inset:0;display:flex}
-.compare-half{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a18}
-.compare-half img{max-width:100%;max-height:100%;object-fit:contain}
-.compare-divider{width:3px;background:var(--accent);z-index:5}
-.compare-label{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:2px 10px;font-size:9px;font-weight:700;font-family:'Press Start 2P';z-index:5;border:2px solid}
-.compare-label.dende{color:var(--dende-light);border-color:var(--dende);background:rgba(107,82,64,0.8)}
-.compare-label.buu{color:var(--buu-light);border-color:var(--buu);background:rgba(232,145,58,0.8)}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,0.3);animation:slideUp 0.3s ease}
+.toast.success{background:#065f46;color:#6ee7b7}.toast.error{background:#7f1d1d;color:#fca5a5}.toast.info{background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
 
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:999;padding:8px 18px;font-size:12px;font-weight:600;border:2px solid;animation:slideUp 0.2s ease}
-.toast.success{background:#065f46;color:#6ee7b7;border-color:#059669}
-.toast.error{background:#7f1d1d;color:#fca5a5;border-color:#dc2626}
-.toast.info{background:var(--card);color:var(--text);border-color:var(--border)}
-
-.fab{position:fixed;bottom:20px;right:calc(50% - var(--max-w)/2 + 14px);width:50px;height:50px;background:var(--accent);border:3px solid #c99520;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:90;font-size:22px;color:#1a1a2e;font-weight:900}
-.fab:active{transform:translate(2px,2px)}
-@media(max-width:720px){.fab{right:14px}}
+.fab{position:fixed;bottom:22px;right:calc(50% - var(--max-w)/2 + 16px);width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border:none;cursor:pointer;box-shadow:0 4px 16px rgba(247,183,49,0.35);display:flex;align-items:center;justify-content:center;z-index:90;font-size:22px;color:#1a1a2e;font-weight:900;transition:transform 0.2s}
+.fab:active{transform:scale(0.9)}
+@media(max-width:720px){.fab{right:16px}}
 
 .empty-state{text-align:center;padding:50px 20px;color:var(--text-muted)}
 .empty-state .big{font-size:48px;margin-bottom:12px}
 
-/* ─── Pixel Cat Canvas ─── */
-.cat-canvas{image-rendering:pixelated;image-rendering:crisp-edges}
-
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes blink{0%,95%,100%{opacity:1}97%{opacity:0}}
 @media(max-width:480px){.hide-mobile{display:none}}
 </style>
 </head>
@@ -201,16 +171,16 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
   <div class="header">
     <div class="header-left">
       <div class="header-chars">
-        <canvas id="headerDende" class="cat-canvas" width="48" height="48"></canvas>
-        <canvas id="headerBuu" class="cat-canvas" width="48" height="48"></canvas>
+        <canvas id="headerDende" width="42" height="42" style="image-rendering:pixelated"></canvas>
+        <canvas id="headerBuu" width="42" height="42" style="image-rendering:pixelated"></canvas>
       </div>
       <div>
         <div class="header-title">DENDE & BOO</div>
         <div class="header-sub" id="headerSub">고양이 성장 기록</div>
       </div>
     </div>
-    <div class="header-right">
-      <button class="btn btn-primary btn-sm" onclick="showAddModal()">+ NEW</button>
+    <div>
+      <button class="btn btn-primary btn-sm" onclick="showAddModal()">+ 사진</button>
     </div>
   </div>
   <div class="cat-tabs" id="catTabs"></div>
@@ -220,14 +190,10 @@ input,select,textarea,button{font-family:inherit;font-size:inherit}
 <div id="toastContainer"></div>
 
 <script>
-// ═══ DENDE & BOO - Retro Cat Journal ═══
-// ═══ DEVELOPED BY DONGGU KANG ═══
-
 const API_URL="https://script.google.com/macros/s/AKfycbwAQEvwQEAu45ShEyJKjZainLeu1TOXqxTI-4JkjrMCcjBjDxjZSQyXxWzSp4NuenIC/exec";
 const BIRTHDAYS={dende:'2016-02-11',buu:'2016-08-04'};
-
 let state={entries:[],catFilter:'all'};
-const CACHE='catjournal_v2';
+const CACHE='catjournal_v3';
 const cacheLocal=()=>{try{localStorage.setItem(CACHE,JSON.stringify(state.entries))}catch{}};
 const loadCache=()=>{try{return JSON.parse(localStorage.getItem(CACHE))}catch{return null}};
 const CAT_NAMES={dende:'덴데',buu:'부우',together:'함께'};
@@ -239,26 +205,17 @@ function fmtDate(d){if(!d)return'';const dt=new Date(d);return`${dt.getFullYear(
 function fmtDateFull(d){if(!d)return'';const dt=new Date(d);return`${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`}
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).substr(2,5);
 
-// ─── Pixel Cat Drawing ──────────────────────────────────────────
-function drawPixelCat(canvas,type,scale){
-  const ctx=canvas.getContext('2d');const s=scale||3;ctx.imageSmoothingEnabled=false;
-  const colors=type==='dende'?{dark:'#4a3728',mid:'#6b5240',light:'#ffffff',ear:'#d4a0a0',eye:'#4CAF50',nose:'#d4a0a0',pupil:'#1a1a1a',stripe:'#3d2b1f'}:{dark:'#e8913a',mid:'#f0a852',light:'#ffffff',ear:'#e8a0a0',eye:'#8BC34A',nose:'#e8a0a0',pupil:'#1a1a1a',stripe:'#d07830'};
-  if(type==='together'){drawPixelCat(canvas,'dende',scale);return}
-  const p=(x,y,c)=>{ctx.fillStyle=c;ctx.fillRect(x*s,y*s,s,s)};
-  const draw=[[4,1,colors.dark],[5,1,colors.dark],[9,1,colors.dark],[10,1,colors.dark],[3,2,colors.dark],[4,2,colors.ear],[5,2,colors.dark],[9,2,colors.dark],[10,2,colors.ear],[11,2,colors.dark],[3,3,colors.dark],[4,3,colors.dark],[5,3,colors.dark],[9,3,colors.dark],[10,3,colors.dark],[11,3,colors.dark],[4,3,colors.dark],[5,3,colors.mid],[6,3,colors.mid],[7,3,colors.dark],[8,3,colors.mid],[9,3,colors.dark],[3,4,colors.dark],[4,4,colors.mid],[5,4,colors.light],[6,4,colors.mid],[7,4,colors.light],[8,4,colors.mid],[9,4,colors.light],[10,4,colors.mid],[11,4,colors.dark],[3,5,colors.mid],[4,5,colors.light],[5,5,colors.eye],[6,5,colors.light],[7,5,colors.light],[8,5,colors.light],[9,5,colors.eye],[10,5,colors.light],[11,5,colors.mid],[3,6,colors.mid],[4,6,colors.light],[5,6,colors.pupil],[6,6,colors.light],[7,6,colors.nose],[8,6,colors.light],[9,6,colors.pupil],[10,6,colors.light],[11,6,colors.mid],[4,7,colors.light],[5,7,colors.light],[6,7,colors.light],[7,7,colors.light],[8,7,colors.light],[9,7,colors.light],[10,7,colors.light],[3,8,colors.dark],[4,8,colors.mid],[5,8,colors.light],[6,8,colors.light],[7,8,colors.light],[8,8,colors.light],[9,8,colors.light],[10,8,colors.mid],[11,8,colors.dark],[2,9,colors.dark],[3,9,colors.mid],[4,9,colors.light],[5,9,colors.light],[6,9,colors.light],[7,9,colors.light],[8,9,colors.light],[9,9,colors.light],[10,9,colors.mid],[11,9,colors.dark],[2,10,colors.dark],[3,10,colors.mid],[4,10,colors.light],[5,10,colors.light],[6,10,colors.light],[7,10,colors.light],[8,10,colors.light],[9,10,colors.light],[10,10,colors.mid],[11,10,colors.dark],[2,11,colors.dark],[3,11,colors.mid],[4,11,colors.mid],[5,11,colors.light],[6,11,colors.light],[7,11,colors.light],[8,11,colors.light],[9,11,colors.mid],[10,11,colors.mid],[11,11,colors.dark],[3,12,colors.dark],[4,12,colors.light],[5,12,colors.light],[6,12,colors.light],[7,12,colors.light],[8,12,colors.light],[9,12,colors.light],[10,12,colors.dark],[12,12,colors.dark],[3,13,colors.light],[4,13,colors.light],[5,13,colors.light],[6,13,colors.light],[7,13,colors.light],[8,13,colors.light],[9,13,colors.light],[10,13,colors.light],[11,13,colors.dark],[12,13,colors.dark]];
-  const stripes=[[5,4,colors.stripe],[7,4,colors.stripe],[6,5,colors.stripe],[8,5,colors.stripe],[4,9,colors.stripe],[6,9,colors.stripe],[8,9,colors.stripe],[5,10,colors.stripe],[7,10,colors.stripe]];
+// ─── Pixel Cat ──────────────────────────────────────────────────
+function drawPixelCat(canvas,type,sc){
+  const ctx=canvas.getContext('2d');const s=sc||3;ctx.imageSmoothingEnabled=false;
+  const c=type==='dende'?{d:'#4a3728',m:'#6b5240',l:'#fff',ear:'#d4a0a0',eye:'#4CAF50',nose:'#d4a0a0',pup:'#1a1a1a',st:'#3d2b1f'}:{d:'#e8913a',m:'#f0a852',l:'#fff',ear:'#e8a0a0',eye:'#8BC34A',nose:'#e8a0a0',pup:'#1a1a1a',st:'#d07830'};
+  const p=(x,y,cl)=>{ctx.fillStyle=cl;ctx.fillRect(x*s,y*s,s,s)};
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  draw.forEach(([x,y,c])=>p(x,y,c));
-  stripes.forEach(([x,y,c])=>p(x,y,c));
+  [[4,1,c.d],[5,1,c.d],[9,1,c.d],[10,1,c.d],[3,2,c.d],[4,2,c.ear],[5,2,c.d],[9,2,c.d],[10,2,c.ear],[11,2,c.d],[3,3,c.d],[5,3,c.m],[6,3,c.m],[7,3,c.d],[8,3,c.m],[9,3,c.d],[10,3,c.d],[11,3,c.d],[3,4,c.d],[4,4,c.m],[5,4,c.l],[6,4,c.m],[7,4,c.l],[8,4,c.m],[9,4,c.l],[10,4,c.m],[11,4,c.d],[3,5,c.m],[4,5,c.l],[5,5,c.eye],[6,5,c.l],[7,5,c.l],[8,5,c.l],[9,5,c.eye],[10,5,c.l],[11,5,c.m],[3,6,c.m],[4,6,c.l],[5,6,c.pup],[6,6,c.l],[7,6,c.nose],[8,6,c.l],[9,6,c.pup],[10,6,c.l],[11,6,c.m],[4,7,c.l],[5,7,c.l],[6,7,c.l],[7,7,c.l],[8,7,c.l],[9,7,c.l],[10,7,c.l],[3,8,c.d],[4,8,c.m],[5,8,c.l],[6,8,c.l],[7,8,c.l],[8,8,c.l],[9,8,c.l],[10,8,c.m],[11,8,c.d],[2,9,c.d],[3,9,c.m],[4,9,c.l],[5,9,c.l],[6,9,c.l],[7,9,c.l],[8,9,c.l],[9,9,c.l],[10,9,c.m],[11,9,c.d],[2,10,c.d],[3,10,c.m],[4,10,c.l],[5,10,c.l],[6,10,c.l],[7,10,c.l],[8,10,c.l],[9,10,c.l],[10,10,c.m],[11,10,c.d],[2,11,c.d],[3,11,c.m],[4,11,c.m],[5,11,c.l],[6,11,c.l],[7,11,c.l],[8,11,c.l],[9,11,c.m],[10,11,c.m],[11,11,c.d],[3,12,c.d],[4,12,c.l],[5,12,c.l],[6,12,c.l],[7,12,c.l],[8,12,c.l],[9,12,c.l],[10,12,c.d],[12,12,c.d],[3,13,c.l],[4,13,c.l],[5,13,c.l],[6,13,c.l],[7,13,c.l],[8,13,c.l],[9,13,c.l],[10,13,c.l],[11,13,c.d],[12,13,c.d]].forEach(([x,y,cl])=>p(x,y,cl));
+  [[5,4,c.st],[7,4,c.st],[6,5,c.st],[8,5,c.st],[4,9,c.st],[6,9,c.st],[8,9,c.st],[5,10,c.st],[7,10,c.st]].forEach(([x,y,cl])=>p(x,y,cl));
 }
+setTimeout(()=>{drawPixelCat(document.getElementById('headerDende'),'dende',3);drawPixelCat(document.getElementById('headerBuu'),'buu',3)},10);
 
-// Draw header cats
-setTimeout(()=>{
-  drawPixelCat(document.getElementById('headerDende'),'dende',3);
-  drawPixelCat(document.getElementById('headerBuu'),'buu',3);
-},10);
-
-// ─── API ────────────────────────────────────────────────────────
 const API={
   async getAll(){try{const r=await fetch(API_URL+'?action=getAll&sheet=cats');const d=await r.json();return d.success?d.entries:null}catch{return null}},
   async add(e){try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',sheet:'cats',entry:e})});return await r.json()}catch{return null}},
@@ -267,47 +224,39 @@ const API={
 };
 
 function showToast(m,t='info'){document.getElementById('toastContainer').innerHTML=`<div class="toast ${t}">${m}</div>`;setTimeout(()=>document.getElementById('toastContainer').innerHTML='',3000)}
-
-async function doSync(){const d=await API.getAll();if(d){state.entries=d.map(e=>({...e,cat:e.tripGroup||'dende'}));cacheLocal();render();showToast('SYNC OK!','success')}}
-
+async function doSync(){const d=await API.getAll();if(d){state.entries=d.map(e=>({...e,cat:e.tripGroup||'dende'}));cacheLocal();render();showToast('동기화 완료!','success')}}
 function getFiltered(){let es=state.entries;if(state.catFilter!=='all')es=es.filter(e=>e.cat===state.catFilter);return es.sort((a,b)=>new Date(a.date)-new Date(b.date))}
 
 function renderCatTabs(){
   const c={all:state.entries.length,dende:state.entries.filter(e=>e.cat==='dende').length,buu:state.entries.filter(e=>e.cat==='buu').length,together:state.entries.filter(e=>e.cat==='together').length};
-  document.getElementById('catTabs').innerHTML=[{id:'all',l:'ALL',e:'📸'},{id:'dende',l:'덴데',e:'🐱'},{id:'buu',l:'부우',e:'🐱'},{id:'together',l:'함께',e:'💕'}].map(t=>`<button class="cat-tab ${state.catFilter===t.id?'active-'+t.id:''}" onclick="state.catFilter='${t.id}';render()">${t.e} ${t.l} ${c[t.id]}</button>`).join('');
+  document.getElementById('catTabs').innerHTML=[
+    {id:'all',l:'전체',e:'📸'},{id:'dende',l:'덴데',e:'🐱'},{id:'buu',l:'부우',e:'🐱'},{id:'together',l:'함께',e:'💕'}
+  ].map(t=>`<button class="cat-tab ${state.catFilter===t.id?'active-'+t.id:''}" onclick="state.catFilter='${t.id}';render()">${t.e} ${t.l} ${c[t.id]}</button>`).join('');
 }
 
 function render(){
   renderCatTabs();
   const el=document.getElementById('content');
   const es=getFiltered();
-  if(!es.length){el.innerHTML=`<div class="empty-state"><div class="big">🐱</div><p style="font-family:'Press Start 2P';font-size:10px;color:var(--accent)">NO DATA</p><p style="font-size:12px;margin-top:8px;color:var(--text-muted)">사진을 올려보세요!</p></div>`;return}
-  let html=renderStats()+renderSlideshowOpts()+renderGrowth(es)+renderTimeline(es);
+  if(!es.length){el.innerHTML=`<div class="empty-state"><div class="big">🐱</div><p style="font-size:15px">아직 사진이 없어요</p><p style="font-size:12px;margin-top:6px;color:var(--text-dim)">덴데와 부우의 사진을 올려보세요!</p></div>`;return}
+  let html=renderStats()+renderSSOptions()+renderTimeline(es);
   html+=`<button class="fab" onclick="showAddModal()">+</button>`;
   el.innerHTML=html;
 }
 
 function renderStats(){
   const dc=state.entries.filter(e=>e.cat==='dende').length,bc=state.entries.filter(e=>e.cat==='buu').length,tc=state.entries.filter(e=>e.cat==='together').length;
-  return`<div class="stats-row"><div class="stat-chip total">📸 ALL ${state.entries.length}</div><div class="stat-chip dende">🐱 덴데 ${dc}</div><div class="stat-chip buu">🐱 부우 ${bc}</div><div class="stat-chip together">💕 함께 ${tc}</div></div>`;
+  return`<div class="stats-row"><div class="stat-chip total">📸 전체 ${state.entries.length}</div><div class="stat-chip dende">🐱 덴데 ${dc}</div><div class="stat-chip buu">🐱 부우 ${bc}</div><div class="stat-chip together">💕 함께 ${tc}</div></div>`;
 }
 
-function renderSlideshowOpts(){
+function renderSSOptions(){
   return`<div class="ss-box"><h3>▶ SLIDESHOW</h3>
   <div class="ss-opt" onclick="startSS('all','timeline')"><div class="ss-opt-icon">📸</div><div><div class="ss-opt-title">전체 타임라인</div><div class="ss-opt-desc">시간순 모든 사진</div></div></div>
-  <div class="ss-opt" onclick="startSS('dende','timeline')"><div class="ss-opt-icon" style="border-color:var(--dende)">🐱</div><div><div class="ss-opt-title">덴데 성장기</div><div class="ss-opt-desc">덴데만 시간순</div></div></div>
-  <div class="ss-opt" onclick="startSS('buu','timeline')"><div class="ss-opt-icon" style="border-color:var(--buu)">🐱</div><div><div class="ss-opt-title">부우 성장기</div><div class="ss-opt-desc">부우만 시간순</div></div></div>
+  <div class="ss-opt" onclick="startSS('dende','timeline')"><div class="ss-opt-icon" style="border-color:var(--dende)">🧡</div><div><div class="ss-opt-title">덴데 성장기</div><div class="ss-opt-desc">덴데만 시간순</div></div></div>
+  <div class="ss-opt" onclick="startSS('buu','timeline')"><div class="ss-opt-icon" style="border-color:var(--buu)">🧡</div><div><div class="ss-opt-title">부우 성장기</div><div class="ss-opt-desc">부우만 시간순</div></div></div>
   <div class="ss-opt" onclick="startSS('together','timeline')"><div class="ss-opt-icon" style="border-color:var(--together)">💕</div><div><div class="ss-opt-title">함께 모음</div><div class="ss-opt-desc">둘이 함께 찍은 사진</div></div></div>
   <div class="ss-opt" onclick="showYearPicker()"><div class="ss-opt-icon">📅</div><div><div class="ss-opt-title">연도별 성장기</div><div class="ss-opt-desc">연도 선택 → 월별 랜덤 사진</div></div></div>
   </div>`;
-}
-
-function renderGrowth(es){
-  const months={};es.forEach(e=>{const ym=e.date?.substring(0,7);if(!ym)return;if(!months[ym])months[ym]={dende:0,buu:0,together:0};if(e.cat)months[ym][e.cat]++});
-  const sorted=Object.entries(months).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
-  if(sorted.length<2)return'';
-  const max=Math.max(...sorted.map(([,v])=>v.dende+v.buu+v.together),1);
-  return`<div class="growth-box"><div class="growth-title">MONTHLY PHOTOS</div><div class="growth-bars">${sorted.map(([ym,v])=>`<div style="flex:1;text-align:center"><div class="growth-col"><div class="growth-bar dende" style="height:${(v.dende/max)*60}px"></div><div class="growth-bar buu" style="height:${(v.buu/max)*60}px"></div><div class="growth-bar together" style="height:${(v.together/max)*60}px"></div></div><div class="growth-label">${ym.substring(5)}</div></div>`).join('')}</div></div>`;
 }
 
 function renderTimeline(es){
@@ -331,24 +280,22 @@ function renderTimeline(es){
 function showDetail(id){
   const e=state.entries.find(x=>x.id===id);if(!e)return;
   const cc=e.cat||'dende';const age=cc!=='together'?getMonthAge(BIRTHDAYS[cc],e.date):null;
-  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal">${(e.photos||[]).length?`<div style="background:#0a0a18;position:relative"><img class="detail-photo" src="${e.photos[0]}"><button class="btn btn-ghost" style="position:absolute;top:8px;right:8px;color:#fff;font-size:16px" onclick="closeModal()">✕</button></div>`:''}<div class="detail-content"><div class="detail-cat ${cc}">${CAT_TAG[cc]} ${CAT_NAMES[cc]}</div><div class="detail-date">${fmtDateFull(e.date)}</div>${age!==null?`<div class="detail-age">LV.${age} - ${fmtAge(age)}</div>`:''}<div>${e.memo?`<div class="detail-memo">${e.memo}</div>`:''}${e.country?`<div class="detail-weight">WT: ${e.country}</div>`:''}</div><div style="margin-top:16px;display:flex;gap:6px"><button class="btn btn-default" style="flex:1" onclick="closeModal();startSS('${cc}','timeline')">▶ PLAY</button><button class="btn btn-default" style="color:var(--accent2);border-color:var(--accent2)" onclick="deleteEntry('${e.id}')">DEL</button></div></div></div></div>`;
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal">${(e.photos||[]).length?`<div style="background:#000;position:relative"><img class="detail-photo" src="${e.photos[0]}"><button class="btn-ghost" style="position:absolute;top:10px;right:10px;color:#fff;font-size:18px;background:rgba(0,0,0,0.4);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center" onclick="closeModal()">✕</button></div>`:''}<div class="detail-content"><div class="detail-cat ${cc}">${CAT_TAG[cc]} ${CAT_NAMES[cc]}</div><div class="detail-date">${fmtDateFull(e.date)}</div>${age!==null?`<div class="detail-age">LV.${age} — ${fmtAge(age)}</div>`:''}<div>${e.memo?`<div class="detail-memo">${e.memo}</div>`:''}${e.country?`<div class="detail-weight">⚖️ ${e.country}</div>`:''}</div><div class="detail-actions"><button class="btn btn-default" style="flex:1" onclick="closeModal();startSS('${cc}','timeline')">▶ 슬라이드쇼</button><button class="btn btn-default" style="color:#ef4444;border-color:rgba(239,68,68,0.2)" onclick="deleteEntry('${e.id}')">삭제</button></div></div></div></div>`;
 }
 
 // ─── Add Modal ──────────────────────────────────────────────────
-let addPhotos=[];
+let addPhotos=[];let selectedCat='';
 function showAddModal(){
   addPhotos=[];selectedCat='';
-  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal"><div class="modal-header"><h2>+ NEW PHOTO</h2><button class="btn btn-ghost" onclick="closeModal()" style="color:var(--text)">✕</button></div><div class="modal-body">
-  <div class="form-group"><label class="form-label">🐱 WHO?</label><div class="cat-selector"><button class="cat-sel-btn" id="catBtn_dende" onclick="selectCat('dende')"><canvas id="selDende" class="cat-canvas" width="42" height="42"></canvas><span class="name">덴데</span></button><button class="cat-sel-btn" id="catBtn_buu" onclick="selectCat('buu')"><canvas id="selBuu" class="cat-canvas" width="42" height="42"></canvas><span class="name">부우</span></button><button class="cat-sel-btn" id="catBtn_together" onclick="selectCat('together')"><span style="font-size:24px;display:block;margin-bottom:4px">💕</span><span class="name">함께</span></button></div></div>
-  <div class="form-group"><label class="form-label">📸 PHOTO</label><input type="file" id="photoInput" multiple accept="image/*" style="display:none" onchange="handlePhotoUpload(this)"><button class="upload-zone" onclick="document.getElementById('photoInput').click()">📷 SELECT PHOTO</button><div class="photo-previews" id="photoPreviews"></div></div>
-  <div class="form-row"><div class="form-group"><label class="form-label">📅 DATE</label><input id="entryDate" type="date" class="form-input" value="${new Date().toISOString().split('T')[0]}"></div><div class="form-group"><label class="form-label">⚖️ WEIGHT</label><input id="entryWeight" class="form-input" placeholder="3.5kg"></div></div>
-  <div class="form-group"><label class="form-label">📝 MEMO</label><textarea id="entryMemo" class="form-input" style="min-height:50px;resize:vertical" placeholder="오늘의 기록..."></textarea></div>
-  <button class="btn btn-primary" id="submitBtn" style="width:100%;padding:12px 0;font-size:13px" onclick="submitEntry()">☁️ SAVE TO CLOUD</button>
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal"><div class="modal-header"><h2>📸 사진 추가</h2><button class="btn btn-ghost" onclick="closeModal()" style="font-size:18px">✕</button></div><div class="modal-body">
+  <div class="form-group"><label class="form-label">🐱 누구?</label><div class="cat-selector"><button class="cat-sel-btn" id="catBtn_dende" onclick="selectCat('dende')"><canvas id="selDende" width="42" height="42" style="image-rendering:pixelated"></canvas><span class="name">덴데</span></button><button class="cat-sel-btn" id="catBtn_buu" onclick="selectCat('buu')"><canvas id="selBuu" width="42" height="42" style="image-rendering:pixelated"></canvas><span class="name">부우</span></button><button class="cat-sel-btn" id="catBtn_together" onclick="selectCat('together')"><span style="font-size:28px;display:block;margin-bottom:6px">💕</span><span class="name">함께</span></button></div></div>
+  <div class="form-group"><label class="form-label">📸 사진</label><input type="file" id="photoInput" multiple accept="image/*" style="display:none" onchange="handlePhotoUpload(this)"><button class="upload-zone" onclick="document.getElementById('photoInput').click()">📷 사진 선택</button><div class="photo-previews" id="photoPreviews"></div></div>
+  <div class="form-row"><div class="form-group"><label class="form-label">📅 날짜</label><input id="entryDate" type="date" class="form-input" value="${new Date().toISOString().split('T')[0]}"></div><div class="form-group"><label class="form-label">⚖️ 체중</label><input id="entryWeight" class="form-input" placeholder="3.5kg"></div></div>
+  <div class="form-group"><label class="form-label">📝 메모</label><textarea id="entryMemo" class="form-input" style="min-height:50px;resize:vertical" placeholder="오늘의 기록..."></textarea></div>
+  <button class="btn btn-primary" id="submitBtn" style="width:100%;padding:12px 0;font-size:14px;border-radius:12px" onclick="submitEntry()">☁️ 저장하기</button>
   </div></div></div>`;
   setTimeout(()=>{drawPixelCat(document.getElementById('selDende'),'dende',3);drawPixelCat(document.getElementById('selBuu'),'buu',3)},20);
 }
-
-let selectedCat='';
 function selectCat(cat){selectedCat=cat;['dende','buu','together'].forEach(c=>{document.getElementById('catBtn_'+c).className='cat-sel-btn'+(c===cat?' sel-'+c:'')})}
 function handlePhotoUpload(input){Array.from(input.files||[]).forEach(file=>{const reader=new FileReader();reader.onload=e=>{addPhotos.push({data:e.target.result,name:file.name});renderPhotoPreviews()};reader.readAsDataURL(file)});input.value=''}
 function renderPhotoPreviews(){const el=document.getElementById('photoPreviews');if(!el)return;el.innerHTML=addPhotos.map((p,i)=>`<div class="photo-preview"><img src="${p.data}"><button class="remove-btn" onclick="addPhotos.splice(${i},1);renderPhotoPreviews()">✕</button></div>`).join('')}
@@ -356,71 +303,52 @@ function renderPhotoPreviews(){const el=document.getElementById('photoPreviews')
 async function submitEntry(){
   if(!selectedCat){alert('덴데/부우/함께 선택!');return}
   const date=document.getElementById('entryDate').value;if(!date){alert('날짜 입력!');return}
-  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='UPLOADING...';
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='업로드 중...';
   let photoList=[];
-  for(let i=0;i<addPhotos.length;i++){btn.textContent=`UPLOAD ${i+1}/${addPhotos.length}`;const r=await API.upload(addPhotos[i].data,addPhotos[i].name,date);if(r?.success)photoList.push(r.url)}
+  for(let i=0;i<addPhotos.length;i++){btn.textContent=`사진 ${i+1}/${addPhotos.length}...`;const r=await API.upload(addPhotos[i].data,addPhotos[i].name,date);if(r?.success)photoList.push(r.url)}
   const entry={date,location:'',country:document.getElementById('entryWeight').value,lat:null,lng:null,memo:document.getElementById('entryMemo').value,tags:[selectedCat],favorite:false,tripGroup:selectedCat,photos:photoList,music:'',id:genId()};
   const res=await API.add(entry);
-  if(res?.success){state.entries.push({...entry,cat:selectedCat});cacheLocal();showToast('SAVED! 🐾','success')}else{showToast('SAVE FAILED','error')}
+  if(res?.success){state.entries.push({...entry,cat:selectedCat});cacheLocal();showToast('저장 완료! 🐾','success')}else{showToast('저장 실패','error')}
   closeModal();render();
 }
-
-async function deleteEntry(id){if(!confirm('DELETE?'))return;state.entries=state.entries.filter(e=>e.id!==id);cacheLocal();closeModal();render();showToast('DELETED');await API.del(id)}
+async function deleteEntry(id){if(!confirm('삭제할까요?'))return;state.entries=state.entries.filter(e=>e.id!==id);cacheLocal();closeModal();render();showToast('삭제 완료');await API.del(id)}
 
 // ─── Slideshow ──────────────────────────────────────────────────
-let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=4500,ssTimer=null,ssPTimer=null,ssActive=false,ssMode='timeline';
+let ssPhotos=[],ssIdx=0,ssPlaying=true,ssDur=4500,ssTimer=null,ssPTimer=null,ssActive=false;
 function startSS(cat,mode){
-  ssMode=mode;ssActive=true;ssPlaying=true;ssIdx=0;
+  ssActive=true;ssPlaying=true;ssIdx=0;
   let entries=state.entries.slice();
-  if(cat!=='all'&&cat!=='compare')entries=entries.filter(e=>e.cat===cat);
+  if(cat!=='all')entries=entries.filter(e=>e.cat===cat);
   entries.sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if(mode==='compare'){
-    // 같은 달에 덴데/부우 사진을 각각 최대 5장 랜덤으로 뽑아서 좌우 비교
-    const de=state.entries.filter(e=>e.cat==='dende');
-    const bu=state.entries.filter(e=>e.cat==='buu');
-    const months=new Set();[...de,...bu].forEach(e=>months.add(e.date?.substring(0,7)));
-    ssPhotos=[];
-    [...months].sort().forEach(ym=>{
-      const dPhotos=de.filter(e=>e.date?.startsWith(ym)).flatMap(e=>e.photos||[]).sort(()=>Math.random()-0.5).slice(0,5);
-      const bPhotos=bu.filter(e=>e.date?.startsWith(ym)).flatMap(e=>e.photos||[]).sort(()=>Math.random()-0.5).slice(0,5);
-      const maxLen=Math.max(dPhotos.length,bPhotos.length);
-      for(let i=0;i<maxLen;i++){
-        ssPhotos.push({type:'compare',dImg:dPhotos[i%dPhotos.length]||'',bImg:bPhotos[i%bPhotos.length]||'',date:ym});
-      }
-    });
-    if(!ssPhotos.length){showToast('비교할 사진이 없습니다');return}
-    renderCompare();ssSch();return;
-  }
   if(mode==='yearly'){
-    // showYearPicker에서 호출됨 - cat에 연도가 들어옴
     const year=cat;
     const allEs=state.entries.filter(e=>new Date(e.date).getFullYear()===Number(year));
     ssPhotos=[];
     for(let m=1;m<=12;m++){
-      const monthEs=allEs.filter(e=>new Date(e.date).getMonth()+1===m);
-      const photos=monthEs.flatMap(e=>(e.photos||[]).map(u=>({u,cat:e.cat,date:e.date,memo:e.memo,age:e.cat!=='together'?getMonthAge(BIRTHDAYS[e.cat],e.date):null}))).sort(()=>Math.random()-0.5).slice(0,5);
+      const mEs=allEs.filter(e=>new Date(e.date).getMonth()+1===m);
+      const photos=mEs.flatMap(e=>(e.photos||[]).map(u=>({u,cat:e.cat,date:e.date,memo:e.memo,age:e.cat!=='together'?getMonthAge(BIRTHDAYS[e.cat],e.date):null}))).sort(()=>Math.random()-0.5).slice(0,5);
       ssPhotos.push(...photos);
     }
-    if(!ssPhotos.length){showToast(year+'년 사진이 없습니다');return}
+    if(!ssPhotos.length){showToast(year+'년 사진 없음');return}
     renderSSNormal();ssSch();return;
   }
   ssPhotos=[];entries.forEach(e=>(e.photos||[]).forEach(u=>ssPhotos.push({u,cat:e.cat,date:e.date,memo:e.memo,age:e.cat!=='together'?getMonthAge(BIRTHDAYS[e.cat],e.date):null})));
-  if(!ssPhotos.length){showToast('NO PHOTOS');return}renderSSNormal();ssSch();
+  if(!ssPhotos.length){showToast('사진이 없습니다');return}renderSSNormal();ssSch();
 }
 
-// 연도 선택 팝업
 function showYearPicker(){
   const years=new Set();state.entries.forEach(e=>years.add(new Date(e.date).getFullYear()));
   const sorted=[...years].sort((a,b)=>b-a);
   if(!sorted.length){showToast('데이터 없음');return}
-  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal" style="max-height:70vh"><div class="modal-header"><h2>📅 YEAR SELECT</h2><button class="btn btn-ghost" onclick="closeModal()" style="color:var(--text)">✕</button></div><div class="modal-body">${sorted.map(y=>{
+  document.getElementById('modalContainer').innerHTML=`<div class="modal-overlay"><div class="modal" style="max-height:70vh"><div class="modal-header"><h2>📅 연도 선택</h2><button class="btn btn-ghost" onclick="closeModal()" style="font-size:18px">✕</button></div><div class="modal-body">${sorted.map(y=>{
     const cnt=state.entries.filter(e=>new Date(e.date).getFullYear()===y).length;
-    return`<div class="ss-opt" onclick="closeModal();startSS('${y}','yearly')"><div class="ss-opt-icon" style="font-family:'Press Start 2P';font-size:11px;color:var(--accent)">${y}</div><div><div class="ss-opt-title">${y}년</div><div class="ss-opt-desc">${cnt}장 · 월별 랜덤 5장씩</div></div></div>`;
+    return`<div class="ss-opt" onclick="closeModal();startSS('${y}','yearly')"><div class="ss-opt-icon" style="font-family:'Press Start 2P';font-size:10px;color:var(--accent)">${y}</div><div><div class="ss-opt-title">${y}년</div><div class="ss-opt-desc">${cnt}장 · 월별 랜덤 5장씩</div></div></div>`;
   }).join('')}</div></div></div>`;
 }
-function renderSSNormal(){const c=ssPhotos[ssIdx];const catCol=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';document.getElementById('modalContainer').innerHTML=`<div class="slideshow"><div class="slideshow-img-wrap"><img class="slideshow-img" id="ssImg" src="${c.u}"><div class="slideshow-gradient"></div></div><div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssPBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><span class="slideshow-cat-tag" style="color:${catCol};border-color:${catCol}">${CAT_TAG[c.cat]} ${CAT_NAMES[c.cat]}</span><button class="ss-ctrl" onclick="ssClose()" style="border-color:rgba(255,255,255,0.3)">✕</button></div><div class="slideshow-info">${c.age!==null?`<div class="slideshow-age">LV.${c.age} ${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}</div><div class="slideshow-controls"><button class="ss-ctrl" onclick="ssPrev()">◀</button><button class="ss-ctrl ss-play" id="ssPlayBtn" onclick="ssTog()">${ssPlaying?'⏸':'▶'}</button><button class="ss-ctrl" onclick="ssNext()">▶</button></div></div>`}
-function renderCompare(){const c=ssPhotos[ssIdx];const inner=`<div class="compare-wrap"><div class="compare-half"><div class="compare-label dende">덴데</div>${c.dImg?`<img src="${c.dImg}">`:'<div style="color:var(--text-dim);font-size:11px">없음</div>'}</div><div class="compare-divider"></div><div class="compare-half"><div class="compare-label buu">부우</div>${c.bImg?`<img src="${c.bImg}">`:'<div style="color:var(--text-dim);font-size:11px">없음</div>'}</div></div>`;document.getElementById('modalContainer').innerHTML=`<div class="slideshow">${inner}<div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssPBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><span class="slideshow-cat-tag" style="color:var(--accent);border-color:var(--accent)">🔀 VS</span><button class="ss-ctrl" onclick="ssClose()">✕</button></div><div class="slideshow-info"><div class="slideshow-age">${c.date}</div></div><div class="slideshow-controls"><button class="ss-ctrl" onclick="ssPrev()">◀</button><button class="ss-ctrl ss-play" onclick="ssTog()">${ssPlaying?'⏸':'▶'}</button><button class="ss-ctrl" onclick="ssNext()">▶</button></div></div>`}
-function ssTransition(){if(ssMode==='compare'){renderCompare();return}const img=document.getElementById('ssImg');if(!img)return;img.style.transition='opacity 0.2s';img.style.opacity='0';setTimeout(()=>{const c=ssPhotos[ssIdx];img.src=c.u;img.onload=()=>{img.style.opacity='1'};if(img.complete)img.style.opacity='1';const info=document.querySelector('.slideshow-info');if(info)info.innerHTML=`${c.age!==null?`<div class="slideshow-age">LV.${c.age} ${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}`;const cnt=document.querySelector('.slideshow-counter');if(cnt)cnt.textContent=`${ssIdx+1}/${ssPhotos.length}`;const catCol=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';const tag=document.querySelector('.slideshow-cat-tag');if(tag){tag.style.color=catCol;tag.style.borderColor=catCol;tag.innerHTML=`${CAT_TAG[c.cat]} ${CAT_NAMES[c.cat]}`}},250)}
+
+function renderSSNormal(){const c=ssPhotos[ssIdx];const catCol=c.cat==='dende'?'var(--dende-light)':c.cat==='buu'?'var(--buu-light)':'var(--together-light)';const catBg=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';document.getElementById('modalContainer').innerHTML=`<div class="slideshow"><div class="slideshow-img-wrap"><img class="slideshow-img" id="ssImg" src="${c.u}"><div class="slideshow-gradient"></div></div><div class="slideshow-progress"><div class="slideshow-progress-bar" id="ssPBar"></div></div><div class="slideshow-top"><span class="slideshow-counter">${ssIdx+1}/${ssPhotos.length}</span><span class="slideshow-cat-tag" style="background:${catBg};color:#fff">${CAT_TAG[c.cat]} ${CAT_NAMES[c.cat]}</span><button class="ss-ctrl" onclick="ssClose()">✕</button></div><div class="slideshow-info">${c.age!==null?`<div class="slideshow-age">LV.${c.age} — ${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}</div><div class="slideshow-controls"><button class="ss-ctrl" onclick="ssPrev()">◀</button><button class="ss-ctrl ss-play" id="ssPlayBtn" onclick="ssTog()">${ssPlaying?'⏸':'▶'}</button><button class="ss-ctrl" onclick="ssNext()">▶</button></div></div>`}
+
+function ssTransition(){const img=document.getElementById('ssImg');if(!img)return;img.style.transition='opacity 0.2s';img.style.opacity='0';setTimeout(()=>{const c=ssPhotos[ssIdx];img.src=c.u;img.onload=()=>{img.style.opacity='1'};if(img.complete)img.style.opacity='1';const info=document.querySelector('.slideshow-info');if(info)info.innerHTML=`${c.age!==null?`<div class="slideshow-age">LV.${c.age} — ${fmtAge(c.age)}</div>`:''}<div class="slideshow-date">${fmtDate(c.date)}</div>${c.memo?`<div class="slideshow-memo">${c.memo}</div>`:''}`;const cnt=document.querySelector('.slideshow-counter');if(cnt)cnt.textContent=`${ssIdx+1}/${ssPhotos.length}`;const catCol=c.cat==='dende'?'var(--dende)':c.cat==='buu'?'var(--buu)':'var(--together)';const tag=document.querySelector('.slideshow-cat-tag');if(tag){tag.style.background=catCol;tag.innerHTML=`${CAT_TAG[c.cat]} ${CAT_NAMES[c.cat]}`}},250)}
 function ssSch(){clearTimeout(ssTimer);clearInterval(ssPTimer);if(!ssPlaying||!ssActive)return;const start=Date.now();ssPTimer=setInterval(()=>{const bar=document.getElementById('ssPBar');if(bar)bar.style.width=Math.min((Date.now()-start)/ssDur*100,100)+'%'},30);ssTimer=setTimeout(()=>{ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();ssSch()},ssDur)}
 function ssTog(){ssPlaying=!ssPlaying;const btn=document.getElementById('ssPlayBtn');if(btn)btn.textContent=ssPlaying?'⏸':'▶';if(ssPlaying)ssSch();else{clearTimeout(ssTimer);clearInterval(ssPTimer)}}
 function ssNext(){clearTimeout(ssTimer);clearInterval(ssPTimer);ssIdx=(ssIdx+1)%ssPhotos.length;ssTransition();if(ssPlaying)setTimeout(ssSch,500)}
@@ -432,7 +360,7 @@ async function init(){
   if('serviceWorker' in navigator){navigator.serviceWorker.register('./cat-sw.js').catch(()=>{});}
   const cached=loadCache();
   if(cached&&cached.length){state.entries=cached.map(e=>({...e,cat:e.tripGroup||'dende'}));render()}
-  else{document.getElementById('content').innerHTML='<div class="empty-state"><div class="big">🐱</div><p style="font-family:\'Press Start 2P\';font-size:10px;color:var(--accent)">LOADING...</p></div>'}
+  else{document.getElementById('content').innerHTML='<div class="empty-state"><div class="big">🐱</div><p style="font-size:14px;color:var(--text-muted)">불러오는 중...</p></div>'}
   await doSync();
 }
 init();
